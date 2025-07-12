@@ -13,6 +13,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'is_admin'
     ];
 
     protected $hidden = [
@@ -20,8 +21,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
     protected $table = 'users';
-    protected $casts = [
-        'is_admin' => 'boolean',
-    ];
+
 
 }
