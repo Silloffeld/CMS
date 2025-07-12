@@ -21,6 +21,7 @@ class AdminController extends Controller
     public function addAdmin()
     {
         $admins = User::where('is_admin' , true)->get();
+
         return Inertia::render('admin/addAdmin',[
             'admins' => $admins
         ]);
@@ -29,39 +30,37 @@ class AdminController extends Controller
     {
         $maxAdmins = 5;
 
-        $adminCount = \App\Models\User::where('is_admin', true)->count();
+        $adminCount = User::where('is_admin', true)->count();
 
         if ($adminCount >= $maxAdmins) {
-            // Optionally use a redirect or validation error
             return back()->withErrors(['admin_limit' => 'Maximum admin count reached.']);
         }
 
-        // Validate and create as usual
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
         ]);
 
-        $admin = \App\Models\User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'is_admin' => true,
         ]);
-        return Inertia::render('admin/addAdmin', []);
-    }
-    public function deleteAdmin($id)
-{
-    $admin = User::findOrFail($id);
-    $admin->delete();
 
-    // Return updated list of admins
-    $admins = User::where('is_admin', true)->get();
-    return Inertia::render('admin/addAdmin', [
-        'admins' => $admins
-    ]);
-}
+        // Redirect to the addAdmin page
+        return redirect()->route('admin.add');
+    }
+
+    public function deleteAdmin($id)
+    {
+        $admin = User::findOrFail($id);
+        $admin->delete();
+
+        // Redirect to the addAdmin page, which will fetch fresh list of admins
+        return redirect()->route('admin.add');
+    }
     public function dashboard()
     {
         return Inertia::render('admin/dashboard');

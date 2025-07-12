@@ -32,7 +32,7 @@ export default function AddAdmin( { admins } ) {
     }
     function handleDelete(id) {
         if (confirm("Are you sure you want to delete this admin?")) {
-            router.delete(route("admin.deleteAdmin", id), {
+            router.delete(route("admin.delete", id), {
                 preserveScroll: true,
                 onSuccess: () => setSuccess("Admin deleted!"),
             });
