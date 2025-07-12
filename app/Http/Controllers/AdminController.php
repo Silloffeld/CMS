@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Inertia\Inertia;
-use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use function Termwind\render;
@@ -11,8 +11,8 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = Admin::all();
-        return Inertia::render('admin/dashboard', [
+        $admins = User::all();
+        return Inertia::render('admin/auth/login', [
             'admins' => $admins
         ]);
     }
@@ -29,12 +29,12 @@ class AdminController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        Admin::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admin.index')->with('success', 'Admin user created!');
+        return redirect()->route('admin.index')->with('success', 'User user created!');
     }
 }
