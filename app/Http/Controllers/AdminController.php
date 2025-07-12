@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -9,6 +11,9 @@ use function Termwind\render;
 
 class AdminController extends Controller
 {
+//    public function login(){
+//        return Inertia::render('admin/auth/verify-email');
+//    }
     public function index()
     {
         $admins = User::all();
@@ -20,21 +25,17 @@ class AdminController extends Controller
     {
         return Inertia::render('admin/addAdmin');
     }
-
-    public function store(Request $request)
+    public function dashboard()
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:admins,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        return Inertia::render('admin/dashboard');
+    }
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
 
-        return redirect()->route('admin.index')->with('success', 'User user created!');
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('admin.dashboard', absolute: false));
     }
 }

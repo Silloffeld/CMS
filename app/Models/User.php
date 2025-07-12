@@ -5,7 +5,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable //implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -20,4 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
     protected $table = 'users';
+    protected $casts = [
+        'is_admin' => 'boolean',
+    ];
+
 }

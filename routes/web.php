@@ -6,7 +6,7 @@ use Inertia\Inertia;
 
 route::get('/', function () {
     return inertia::render('welcome');
-})->name('welcome');
+})->name('home');
 
 
 require __DIR__.'/admin.php';
