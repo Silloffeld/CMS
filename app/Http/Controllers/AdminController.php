@@ -11,9 +11,9 @@ use function Termwind\render;
 
 class AdminController extends Controller
 {
-//    public function login(){
-//        return Inertia::render('admin/auth/verify-email');
-//    }
+    public function login(){
+        return Inertia::render('admin/auth/verify-email');
+  }
     public function index()
     {
         $admins = User::all();
