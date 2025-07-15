@@ -5,10 +5,10 @@ import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
 
-export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+export default function AppSidebarLayout({ children, breadcrumbs = [], isSuper }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[]; isSuper?: boolean | number }>) {
     return (
         <AppShell variant="sidebar">
-            <AppSidebar />
+            <AppSidebar isSuper={isSuper} />
             <AppContent variant="sidebar" className="overflow-x-hidden">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}

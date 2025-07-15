@@ -7,17 +7,27 @@ import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },   {
-        title: 'add admin users',
-        href: '/addAdmin',
-        icon: LayoutGrid,
-    },
-];
+
+type AppSidebarProps = {
+    isSuper: number | boolean; // Accepts either type
+};
+
+export function AppSidebar({ isSuper }: AppSidebarProps) {
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/admin',
+            icon: LayoutGrid,
+        },
+        // Only include if isSuper is true or 1
+        ...(isSuper
+            ? [{
+                title: 'add admin users',
+                href: '/addAdmin',
+                icon: LayoutGrid,
+            }]
+            : []),
+    ];
 
 const footerNavItems: NavItem[] = [
     {
@@ -31,15 +41,13 @@ const footerNavItems: NavItem[] = [
         icon: BookOpen,
     },
 ];
-
-export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
+                            <Link href="/admin" prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -57,4 +65,4 @@ export function AppSidebar() {
             </SidebarFooter>
         </Sidebar>
     );
-}
+ }

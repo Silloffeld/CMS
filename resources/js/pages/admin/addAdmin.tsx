@@ -7,7 +7,7 @@ const breadcrumbs = [
     { label: "Add Admin", href: "/addAdmin" },
 ];
 
-export default function AddAdmin( { admins } ) {
+export default function AddAdmin( { admins , is_super} ) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
@@ -32,14 +32,14 @@ export default function AddAdmin( { admins } ) {
     }
     function handleDelete(id) {
         if (confirm("Are you sure you want to delete this admin?")) {
-            router.delete(route("admin.deleteAdmin", id), {
+            router.delete(route("admin.delete", id), {
                 preserveScroll: true,
                 onSuccess: () => setSuccess("Admin deleted!"),
             });
         }
     }
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} isSuper={is_super}>
             <div className="m-5">
                 <form method="post" className="m-3 " onSubmit={handleSubmit}>
                     <label className="block mb-2 font-bold" htmlFor="name">

@@ -20,17 +20,23 @@ class AdminController extends Controller
     }
     public function addAdmin()
     {
-        $admins = User::where('is_admin' , true)->get();
-        return Inertia::render('admin/addAdmin',[
-            'admins' => $admins
+        // Only the head admin can access this page
+        if (!auth()->user()->is_super) {
+            abort(403, 'Only the head admin can manage other admins.');
+        }
+
+        $admins = User::where('is_admin', true)->get();
+        return Inertia::render('admin/addAdmin', [
+            'admins' => $admins,
+            'is_super' => auth()->user()->is_super
         ]);
     }
+
     public function storeAdmin(Request $request)
     {
         $maxAdmins = 5;
 
         $adminCount = \App\Models\User::where('is_admin', true)->count();
-
         if ($adminCount >= $maxAdmins) {
             // Optionally use a redirect or validation error
             return back()->withErrors(['admin_limit' => 'Maximum admin count reached.']);
@@ -49,7 +55,7 @@ class AdminController extends Controller
             'password' => bcrypt($request->password),
             'is_admin' => true,
         ]);
-        return Inertia::render('admin/addAdmin', []);
+        return redirect()->route('admin.addAdmin')->with('success', 'Admin added!');
     }
     public function deleteAdmin($id)
 {
@@ -64,7 +70,7 @@ class AdminController extends Controller
 }
     public function dashboard()
     {
-        return Inertia::render('admin/dashboard');
+        return Inertia::render('admin/dashboard',['is_super' => auth()->user()->is_super]);
     }
 
     public function login(LoginRequest $request): RedirectResponse

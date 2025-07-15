@@ -20,6 +20,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+    protected $casts = [
+        'is_super' => 'boolean',
+        'is_admin' => 'boolean',
+    ];
     protected $table = 'users';
 
 
