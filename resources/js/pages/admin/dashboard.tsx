@@ -2,7 +2,7 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import { InteractiveLineChart } from '@/components/interactive-line-chard';
+// import { InteractiveLineChart } from '@/components/interactive-line-chard';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,16 +19,16 @@ export default function Dashboard({is_super}) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <InteractiveLineChart
-                            data={yourData}
-                            config={{
-                                color: "#10b981",
-                                height: "500px",
-                                valueLabel: "Sales ($)",
-                                showSearch: false
-                            }}
-                            onPointClick={(data) => console.log(data)}
-                        />
+                        {/*<InteractiveLineChart*/}
+                        {/*    data={yourData}*/}
+                        {/*    config={{*/}
+                        {/*        color: "#10b981",*/}
+                        {/*        height: "500px",*/}
+                        {/*        valueLabel: "Sales ($)",*/}
+                        {/*        showSearch: false*/}
+                        {/*    }}*/}
+                        {/*    onPointClick={(data) => console.log(data)}*/}
+                        {/*/>*/}
                     </div>
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />

@@ -14,5 +14,8 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
 
     Route::post('addAdmin', [AdminController::class, 'storeAdmin']) -> name('admin.addAdmin');
     Route::delete('addAdmin/{id}', [AdminController::class, 'deleteAdmin']) -> name('admin.delete');
+
+    Route::get('import',[AdminController::class, 'import']) -> name('admin.import');
+    Route::post('import', [AdminController::class, 'StoreImport']) -> name('admin.import');
 });
 

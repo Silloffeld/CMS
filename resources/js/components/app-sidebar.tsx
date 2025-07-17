@@ -26,7 +26,11 @@ export function AppSidebar({ isSuper }: AppSidebarProps) {
                 href: '/addAdmin',
                 icon: LayoutGrid,
             }]
-            : []),
+            : []),  {
+            title: 'import',
+            href: '/import',
+            icon: LayoutGrid,
+        },
     ];
 
 const footerNavItems: NavItem[] = [
