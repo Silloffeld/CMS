@@ -7,7 +7,7 @@ const breadcrumbs = [
     { label: "Add Admin", href: "/addAdmin" },
 ];
 
-export default function AddAdmin( { admins , is_super} ) {
+export default function AddAdmin( { admins } ) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
@@ -39,7 +39,7 @@ export default function AddAdmin( { admins , is_super} ) {
         }
     }
     return (
-        <AppLayout breadcrumbs={breadcrumbs} isSuper={is_super}>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="m-5">
                 <form method="post" className="m-3 " onSubmit={handleSubmit}>
                     <label className="block mb-2 font-bold" htmlFor="name">

@@ -17,5 +17,7 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
 
     Route::get('import',[AdminController::class, 'import']) -> name('admin.import');
     Route::post('import', [AdminController::class, 'StoreImport']) -> name('admin.import');
+
+    Route::get('manage', [AdminController::class, 'manage']) -> name('admin.manage');
 });
 

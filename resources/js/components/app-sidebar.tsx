@@ -27,8 +27,8 @@ export function AppSidebar({ isSuper }: AppSidebarProps) {
                 icon: LayoutGrid,
             }]
             : []),  {
-            title: 'import',
-            href: '/import',
+            title: 'Manage',
+            href: '/manage',
             icon: LayoutGrid,
         },
     ];
@@ -51,7 +51,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href="/admin" prefetch>
+                            <Link href={route('admin.dashboard')} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
