@@ -30,7 +30,7 @@ function Manage({ is_super, product, customer, inventory  }) {
     const [showModal, setShowModal] = useState(true);
     const [selected, setSelected] = useState<string | null>(null);
     return (
-        <AppLayout>
+        <AppLayout >
             {(!product || !customer || !inventory) && showModal ? (
                 <Modal>
                     <Alert className={" border-2 border-red-600 rounded-xl"}>
@@ -50,7 +50,7 @@ function Manage({ is_super, product, customer, inventory  }) {
             ) : (
                 <div className={'flex flex-col'}>
                     {is_super && <Link href={route('admin.addAdmin')} className={"bg-secondary  text-xl m-2 underline p-2 rounded hover:to-95% hover:from-white/20 bg-radial"}>Manage admins</Link>}
-                    <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}  onClick={() => {setSelected(selected === 'product1' ? null : 'product1')}}>products { selected == 'product1' && <div className={"bg-white "}>nice</div>}</button>
+                    <button className={" backdrop-blur-2xl bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}  onClick={() => {setSelected(selected === 'product1' ? null : 'product1')}}>products { selected == 'product1' && <div className={"bg-white "}>nice</div>}</button>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}  onClick={() => {setSelected(selected === 'product2' ? null : 'product2')}}>products { selected == 'product2' && <div className={"bg-white "}>nice</div>}</button>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}  onClick={() => {setSelected(selected === 'product3' ? null : 'product3')}}>products { selected == 'product3' && <div className={"bg-white "}>nice</div>}</button>
                 </div>
