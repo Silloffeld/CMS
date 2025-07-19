@@ -5,12 +5,14 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Customer;
 use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use function Termwind\render;
+use Illuminate\Support\Facades\Schema;
+
 
 class AdminController extends Controller
 {
@@ -132,7 +134,7 @@ class AdminController extends Controller
                 $rowData = array_combine($header, $row);
 
                 // Create Product
-                $product = \App\Models\product::create([
+                $product = Product::create([
                     'handle' => $rowData['handle'] ?? '',
                     'title' => $rowData['title'] ?? '',
                     'body_html' => $rowData['body (html)'] ?? '',
@@ -299,6 +301,16 @@ class AdminController extends Controller
         return Inertia::render('admin/manage', [ 'is_super' => auth()->user()->is_super,
             'product' => Product::count(),
             'customer' => Customer::count(),
-            'inventory' => Inventory::count()]);
+            'inventory' => Inventory::count(),
+            'productData' => Product::with('variants')->get(),]);
         }
+    public function editProduct($id)
+    {
+        $product = Product::with('variants')->findOrFail($id);
+
+        // If using Inertia + React as frontend
+        return inertia('admin/editProduct', [
+            'product' => $product,
+        ]);
+    }
     }

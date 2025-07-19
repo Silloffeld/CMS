@@ -19,5 +19,6 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
     Route::post('import', [AdminController::class, 'StoreImport']) -> name('admin.import');
 
     Route::get('manage', [AdminController::class, 'manage']) -> name('admin.manage');
+    Route::get('editProduct/{product}', [AdminController::class, 'editProduct']) -> name('admin.editProduct');
 });
 

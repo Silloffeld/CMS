@@ -29,7 +29,7 @@ export default function Dashboard() {
                         <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     </div>
                 </div>
-                <div className="relative aspect-video overflow-hidden backdrop-blur-md shadow-lg bg-gradient-to-br  from-transparent  to-white/10 rounded-xl border-2 border-white/10 text-center ">
+                <div className="relative flex-1  overflow-hidden backdrop-blur-md shadow-lg bg-gradient-to-br  from-transparent  to-white/10 rounded-xl border-2 border-white/10 text-center ">
 
                 </div>
             </div>
