@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Eye, Edit, Trash2 } from "lucide-react"
+import { Search, Eye, Edit, Trash2,CircleFadingPlus} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,9 +28,10 @@ interface ProductData {
 
 interface SimpleProductTableProps {
     productData: ProductData[]
+    linkProp: string
 }
 
-export default function DataTable({ productData }: SimpleProductTableProps) {
+export default function DataTable({ productData , }: SimpleProductTableProps) {
     const [searchTerm, setSearchTerm] = useState("")
 
     // Filter data based on search
@@ -148,6 +149,7 @@ export default function DataTable({ productData }: SimpleProductTableProps) {
                         <div className="text-sm text-muted-foreground">
                             Showing {filteredData.length} of {productData.length} products
                         </div>
+                        <Link href={route('admin.addProduct',)} className={'flex gap-2 bg-secondary py-0 px-2 rounded'}><p className={'bg-primary m-1 rounded px-1'}>add products</p> <CircleFadingPlus className={'w-4 h-4 my-auto text-primary'}/></Link>
                     </div>
                 )}
             </CardContent>

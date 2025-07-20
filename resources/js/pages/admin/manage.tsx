@@ -57,7 +57,7 @@ function Manage({ is_super, product, customer, inventory , productData,   }) {
                             onClick={() => {setSelected(selected === 'product1' ? null : 'product1')}}>products
                     </button>
                     { selected == 'product1' && <div className={"mt-0 m-2"}>
-                        <DataTable productData={productData}/>
+                        <DataTable productData={productData} linkProp={"addProduct"}/>
                     </div>}
                     </div>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
