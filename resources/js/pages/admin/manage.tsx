@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useState } from 'react'
 import DataTable  from '@/components/data-table';
+import { CircleFadingPlus } from 'lucide-react';
 
 
 function Modal({ children , }: { children: ReactNode }) {
@@ -28,7 +29,7 @@ function Modal({ children , }: { children: ReactNode }) {
 }
 
 
-function Manage({ is_super, product, customer, inventory , productData,   }) {
+function Manage({ is_super, product, customer, inventory , productData, inventoryData   }) {
     const [showModal, setShowModal] = useState(true);
     const [selected, setSelected] = useState<string | null>(null);
     return (
@@ -57,12 +58,12 @@ function Manage({ is_super, product, customer, inventory , productData,   }) {
                             onClick={() => {setSelected(selected === 'product1' ? null : 'product1')}}>products
                     </button>
                     { selected == 'product1' && <div className={"mt-0 m-2"}>
-                        <DataTable productData={productData} linkProp={"addProduct"}/>
+                        <DataTable productData={productData}  title={"product"} editLink={'admin.editProduct'} addLink={'admin.addProduct'}/>
                     </div>}
                     </div>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
                             onClick={() => {setSelected(selected === 'product2' ? null : 'product2')}}>products { selected == 'product2' &&
-                        <div className={"bg-white "}>nice</div>}</button>
+                        <DataTable productData={inventoryData} title={"inventory"}/>}</button>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
                             onClick={() => {setSelected(selected === 'product3' ? null : 'product3')}}>products { selected == 'product3' &&
                         <div className={"bg-white "}>nice</div>}</button>

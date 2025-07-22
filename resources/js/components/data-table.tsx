@@ -28,28 +28,29 @@ interface ProductData {
 
 interface SimpleProductTableProps {
     productData: ProductData[]
-    linkProp: string
+    title : string
+    editLink:string
+    addLink:string
 }
 
-export default function DataTable({ productData , }: SimpleProductTableProps) {
+export default function DataTable({ productData  ,title , editLink , addLink}: SimpleProductTableProps) {
     const [searchTerm, setSearchTerm] = useState("")
 
     // Filter data based on search
     const filteredData = productData.filter((product) =>
         Object.values(product).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
     )
-
     return (
         <Card className="w-full">
             <CardHeader>
-                <CardTitle>Product Management</CardTitle>
-                <CardDescription>Manage your products with search and actions</CardDescription>
+                <CardTitle>{title} Management</CardTitle>
+                <CardDescription>Manage your {title} with search and actions</CardDescription>
 
                 <div className="flex items-center space-x-2">
                     <div className="relative flex-1 max-w-sm">
                         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Search products..."
+                            placeholder={'search' + title}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-8"
@@ -78,7 +79,7 @@ export default function DataTable({ productData , }: SimpleProductTableProps) {
                             {filteredData.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={9} className="text-center py-8">
-                                        No products found
+                                        No {title} found
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -122,7 +123,7 @@ export default function DataTable({ productData , }: SimpleProductTableProps) {
                                                 >
                                                     <Eye className="h-4 w-4" />
                                                 </Button>
-                                                    <Link href={route('admin.editProduct', product.id)} className={"h-8 w-8 p-0"}>
+                                                    <Link href={route(editLink, product.id)} className={"h-8 w-8 p-0"}>
                                                     <Edit className="h-4 w-4" />
                                                 </Link>
 
@@ -149,7 +150,7 @@ export default function DataTable({ productData , }: SimpleProductTableProps) {
                         <div className="text-sm text-muted-foreground">
                             Showing {filteredData.length} of {productData.length} products
                         </div>
-                        <Link href={route('admin.addProduct',)} className={'flex gap-2 bg-secondary py-0 px-2 rounded'}><p className={'bg-primary m-1 rounded px-1'}>add products</p> <CircleFadingPlus className={'w-4 h-4 my-auto text-primary'}/></Link>
+                        <Link href={route(addLink)}>add {title}</Link>
                     </div>
                 )}
             </CardContent>
