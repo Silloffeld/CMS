@@ -26,8 +26,5 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
     Route::post('addProduct', [ManageController::class, 'storeProduct']) -> name('admin.addProduct');
 
     Route::get('addInventory', [ManageController::class, 'addInventory']) -> name('admin.addInventory');
-    Route::post('addInventory', [ManageController::class, 'storeInventory']) -> name('admin.addInventory');
-    Route::get('editInventory/{inventory}', [ManageController::class, 'editInventory']) -> name('admin.editInventory');
-    Route::post('editInventory/{inventory}', [ManageController::class, 'updateInventory']) -> name('admin.editInventory');
 });
 

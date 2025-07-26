@@ -127,4 +127,10 @@ class ManageController extends Controller
         return redirect()->route('admin.manage');
 }
 
+
+
+
+
+
+
 }
