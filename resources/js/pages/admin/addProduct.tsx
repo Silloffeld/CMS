@@ -144,10 +144,6 @@ export default function AddProduct() {
                             <Input name="tags" value={data.tags} onChange={handleChange} placeholder="Comma separated tags" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Published (0 is nee - 1 is ja)</label>
-                            <Input name="published" value={data.published} onChange={handleChange} placeholder="0 or 1" />
-                        </div>
-                        <div>
                             <label className="block text-xs font-medium mb-1">Gift Card</label>
                             <Input name="gift_card" value={data.gift_card} onChange={handleChange} placeholder="Yes/No" />
                         </div>
@@ -164,7 +160,7 @@ export default function AddProduct() {
                             <Input name="status" value={data.status} onChange={handleChange} placeholder="active/draft" />
                         </div>
                         <div className="mt-5 flex justify-center">
-                            <Button type="submit" disabled={processing} className={"p-5 font-bold text-lg text-black"}>
+                            <Button type={'submit'} disabled={processing} className={"p-5 font-bold text-lg text-black"}>
                                 Create Product
                             </Button>
                         </div>
@@ -289,6 +285,7 @@ export default function AddProduct() {
                     </CardContent>
                 </form>
             </Card>
+
         </AppLayout>
     )
 }

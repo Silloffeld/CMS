@@ -62,8 +62,8 @@ function Manage({ is_super, product, customer, inventory , productData, inventor
                     </div>}
                     </div>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
-                            onClick={() => {setSelected(selected === 'product2' ? null : 'product2')}}>products { selected == 'product2' &&
-                        <DataTable productData={inventoryData} title={"inventory"}/>}</button>
+                            onClick={() => {setSelected(selected === 'product2' ? null : 'product2')}}>inventory { selected == 'product2' &&
+                        <DataTable productData={inventoryData} title={"inventory"} editLink={'admin.editInventory'} addLink={'admin.addInventory'}/>}</button>
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
                             onClick={() => {setSelected(selected === 'product3' ? null : 'product3')}}>products { selected == 'product3' &&
                         <div className={"bg-white "}>nice</div>}</button>

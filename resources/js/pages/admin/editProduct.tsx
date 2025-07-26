@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Link, useForm } from "@inertiajs/react"
 import AppLayout from '@/layouts/app-layout';
+import { usePage } from '@inertiajs/react';
 
 interface ProductVariant {
     id: number
@@ -41,7 +42,11 @@ interface ProductEditProps {
     product: ProductData
 }
 
-export default function editProduct({ product }: ProductEditProps) {
+export default function EditProduct({ product }: ProductEditProps) {
+
+    const { props } = usePage();
+    const successMessage = props.flash?.success;
+
     const { data, setData, post, processing, errors } = useForm({
         handle: product.handle || "",
         title: product.title || "",
@@ -50,7 +55,7 @@ export default function editProduct({ product }: ProductEditProps) {
         product_category: product.product_category || "",
         type: product.type || "",
         tags: product.tags || "",
-        published: product.published || "",
+        published: product.published || 0,
         gift_card: product.gift_card || "",
         seo_title: product.seo_title || "",
         seo_description: product.seo_description || "",
@@ -69,6 +74,26 @@ export default function editProduct({ product }: ProductEditProps) {
             }))
             : [],
     });
+
+    function addVariant() {
+        setData("variants", [
+            ...(data.variants as ProductVariant[]),
+            {
+                sku: "",
+                option1_name: "",
+                option1_value: "",
+                option2_name: "",
+                option2_value: "",
+                option3_name: "",
+                option3_value: "",
+                price: "",
+            },
+        ]);
+    }
+
+    function removeVariant(idx: number) {
+        setData("variants", (data.variants as ProductVariant[]).filter((_, i) => i !== idx));
+    }
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         setData(e.target.name as keyof typeof data, e.target.value)
@@ -92,6 +117,7 @@ export default function editProduct({ product }: ProductEditProps) {
         e.preventDefault()
         post(route("admin.editProduct", product.id))
     }
+
 
     return (
         <AppLayout>
@@ -146,12 +172,17 @@ export default function editProduct({ product }: ProductEditProps) {
                             <Input name="tags" value={data.tags} onChange={handleChange} />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Published (0 is nee - 1 is ja)</label>
-                            <Input name="published" value={data.published} onChange={handleChange} />
+                            <label className="block text-xs font-medium mb-1">Published</label>
+                            <input
+                                type="checkbox"
+                                name="published"
+                                checked={!!data.published}
+                                onChange={e => setData('published', e.target.checked ? 1 : 0)}
+                            />
                         </div>
                         <div>
                             <label className="block text-xs font-medium mb-1">Gift Card</label>
-                            <Input name="gift_card" value={data.gift_card} onChange={handleChange} />
+                            <Input name="gift_card" value={data.gift_card}  onChange={handleChange} />
                         </div>
                         <div>
                             <label className="block text-xs font-medium mb-1">SEO Title</label>
@@ -268,6 +299,16 @@ export default function editProduct({ product }: ProductEditProps) {
                                                         className="min-w-[70px]"
                                                     />
                                                 </TableCell>
+                                                <TableCell>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        onClick={() => removeVariant(idx)}
+                                                        disabled={data.variants.length === 1}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </TableCell>
                                             </TableRow>
                                         ))
                                     ) : (
@@ -279,9 +320,19 @@ export default function editProduct({ product }: ProductEditProps) {
                                     )}
                                 </TableBody>
                             </Table>
+                            <div className="flex justify-center mt-4">
+                                <Button type="button" onClick={addVariant} variant="secondary">
+                                    Add Variant
+                                </Button>
+                            </div>
                         </div>
                     </CardContent>
                 </form>
+                {successMessage && (
+                    <div className="flex text-green-700 ">
+                        {successMessage}
+                    </div>
+                )}
             </Card>
         </AppLayout>
     )

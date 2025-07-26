@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ManageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,9 +19,15 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
     Route::get('import',[AdminController::class, 'import']) -> name('admin.import');
     Route::post('import', [AdminController::class, 'StoreImport']) -> name('admin.import');
 
-    Route::get('manage', [AdminController::class, 'manage']) -> name('admin.manage');
-    Route::get('editProduct/{product}', [AdminController::class, 'editProduct']) -> name('admin.editProduct');
-    Route::post('editProduct/{product}', [AdminController::class, 'updateProduct']) -> name('admin.editProduct');
-    Route::get('addProduct', [AdminController::class, 'addProduct']) -> name('admin.addProduct');
+    Route::get('manage', [ManageController::class, 'manage']) -> name('admin.manage');
+    Route::get('editProduct/{product}', [ManageController::class, 'editProduct']) -> name('admin.editProduct');
+    Route::post('editProduct/{product}', [ManageController::class, 'updateProduct']) -> name('admin.editProduct');
+    Route::get('addProduct', [ManageController::class, 'addProduct']) -> name('admin.addProduct');
+    Route::post('addProduct', [ManageController::class, 'storeProduct']) -> name('admin.addProduct');
+
+    Route::get('addInventory', [ManageController::class, 'addInventory']) -> name('admin.addInventory');
+    Route::post('addInventory', [ManageController::class, 'storeInventory']) -> name('admin.addInventory');
+    Route::get('editInventory/{inventory}', [ManageController::class, 'editInventory']) -> name('admin.editInventory');
+    Route::post('editInventory/{inventory}', [ManageController::class, 'updateInventory']) -> name('admin.editInventory');
 });
 

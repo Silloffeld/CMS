@@ -18,7 +18,7 @@ interface ProductData {
     product_category?: string
     type?: string
     tags?: string
-    published?: string
+    published?: number
     gift_card?: string
     seo_title?: string
     seo_description?: string
@@ -106,9 +106,12 @@ export default function DataTable({ productData  ,title , editLink , addLink}: S
                                             </Badge>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={product.published === "true" ? "default" : "secondary"}>
-                                                {product.published === "true" ? "Published" : "Draft"}
-                                            </Badge>
+                                            {(product.published == 1) ? (
+                                                <Badge>Yes</Badge>
+                                            ) : (
+                                                <Badge>no</Badge>
+                                            )}
+
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline">{product.variants?.length || 0} variants</Badge>
