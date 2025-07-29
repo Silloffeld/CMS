@@ -194,24 +194,6 @@ class AdminController extends Controller
                         'tax_code' => $rowData['variant tax code'] ?? '',
                         // CSV: Cost per item
                         'cost_per_item' => $rowData['cost per item'] ?? '',
-                        // CSV: Google Shopping / Google Product Category
-                        'google_product_category' => $rowData['google shopping / google product category'] ?? '',
-                        // CSV: Google Shopping / Gender
-                        'google_gender' => $rowData['google shopping / gender'] ?? '',
-                        // CSV: Google Shopping / Age Group
-                        'google_age_group' => $rowData['google shopping / age group'] ?? '',
-                        // CSV: Google Shopping / MPN
-                        'google_mpn' => $rowData['google shopping / mpn'] ?? '',
-                        // CSV: Google Shopping / Condition
-                        'google_condition' => $rowData['google shopping / condition'] ?? '',
-                        // CSV: Google Shopping / Custom Product
-                        'google_custom_product' => $rowData['google shopping / custom product'] ?? '',
-                        // CSV: Google Shopping / Custom Label 0-4
-                        'google_custom_label_0' => $rowData['google shopping / custom label 0'] ?? '',
-                        'google_custom_label_1' => $rowData['google shopping / custom label 1'] ?? '',
-                        'google_custom_label_2' => $rowData['google shopping / custom label 2'] ?? '',
-                        'google_custom_label_3' => $rowData['google shopping / custom label 3'] ?? '',
-                        'google_custom_label_4' => $rowData['google shopping / custom label 4'] ?? '',
                     ]);
                 }
 
@@ -258,7 +240,7 @@ class AdminController extends Controller
             }
         }
         elseif($category =='inventaris'){
-            $requiredProduct = ['winkellocatie'];
+            $requiredProduct = ['location'];
             $missingHeaders = array_diff($requiredProduct, $header);
             if (!empty($missingHeaders)) {
                 return back()->with('error', 'Missing required inventory ' . implode(', ', $missingHeaders));
@@ -278,7 +260,7 @@ class AdminController extends Controller
                     'sku'              => $rowData['sku'] ?? '',
                     'hs_code'          => $rowData['hs code'] ?? '',
                     'coo'              => $rowData['coo'] ?? '',
-                    'inventory'    => $rowData['winkellocatie'] ?? '',
+                    'inventory'    => $rowData['location'] ?? '',
                 ]);
                 $created++;
             }

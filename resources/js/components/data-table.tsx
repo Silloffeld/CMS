@@ -168,15 +168,16 @@ export default function DataTable({ productData  ,title , editLink , addLink}: S
                         </TableBody>
                     </Table>
                 </div>
-
+                <div className={'flex'}>
                 {filteredData.length > 0 && (
                     <div className="flex items-center justify-between px-2 py-4">
                         <div className="text-sm text-muted-foreground">
                             Showing {filteredData.length} of {productData.length} products
                         </div>
-                        <Link href={route(addLink)}>add {title}</Link>
                     </div>
                 )}
+                <Link href={route(addLink)} className={'ms-auto my-auto'}>add {title}</Link>
+                </div>
             </CardContent>
         </Card>
     )

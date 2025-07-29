@@ -6,18 +6,18 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Link, useForm } from "@inertiajs/react"
 import AppLayout from '@/layouts/app-layout';
+import {Trash2} from "lucide-react"
 
 interface ProductVariant {
-    sku?: string
-    option1_name?: string
-    option1_value?: string
-    option2_name?: string
-    option2_value?: string
-    option3_name?: string
-    option3_value?: string
+    variantName?: string
+    options: VariantOption[]
     price?: string
     [key: string]: any
 }
+interface VariantOption {
+    name: string;
+}
+
 
 export default function AddProduct() {
     const { data, setData, post, processing, errors } = useForm({
@@ -35,13 +35,8 @@ export default function AddProduct() {
         status: "",
         variants: [
             {
-                sku: "",
-                option1_name: "",
-                option1_value: "",
-                option2_name: "",
-                option2_value: "",
-                option3_name: "",
-                option3_value: "",
+                variantName: "",
+                options: [],
                 price: "",
             }
         ],
@@ -49,6 +44,27 @@ export default function AddProduct() {
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         setData(e.target.name as keyof typeof data, e.target.value)
+    }
+    function handleOptionChange(
+        variantIdx: number,
+        optionIdx: number,
+        field: keyof VariantOption,
+        value: string
+    ) {
+        setData("variants", [
+            ...(data.variants as ProductVariant[]).map((variant, vIdx) =>
+                vIdx === variantIdx
+                    ? {
+                        ...variant,
+                        options: variant.options.map((option, oIdx) =>
+                            oIdx === optionIdx
+                                ? { ...option, [field]: value }
+                                : option
+                        )
+                    }
+                    : variant
+            ),
+        ]);
     }
 
     function handleVariantChange(
@@ -69,13 +85,8 @@ export default function AddProduct() {
         setData("variants", [
             ...(data.variants as ProductVariant[]),
             {
-                sku: "",
-                option1_name: "",
-                option1_value: "",
-                option2_name: "",
-                option2_value: "",
-                option3_name: "",
-                option3_value: "",
+                variantName: "",
+                options: [],
                 price: "",
             },
         ]);
@@ -176,76 +187,55 @@ export default function AddProduct() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>SKU</TableHead>
-                                        <TableHead>Option1 Name</TableHead>
-                                        <TableHead>Option1 Value</TableHead>
-                                        <TableHead>Option2 Name</TableHead>
-                                        <TableHead>Option2 Value</TableHead>
-                                        <TableHead>Option3 Name</TableHead>
-                                        <TableHead>Option3 Value</TableHead>
+                                        <TableHead>variant name</TableHead>
+                                        <TableHead>Options</TableHead>
                                         <TableHead>Price</TableHead>
                                         <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {(data.variants && data.variants.length > 0) ? (
+                                    {data.variants && data.variants.length > 0 ? (
                                         data.variants.map((variant: ProductVariant, idx: number) => (
                                             <TableRow key={idx}>
                                                 <TableCell>
                                                     <Input
-                                                        value={variant.sku || ""}
-                                                        onChange={e => handleVariantChange(idx, "sku", e.target.value)}
+                                                        value={variant.variantName || ""}
+                                                        onChange={e => handleVariantChange(idx, "variantName", e.target.value)}
                                                         className="min-w-[100px]"
-                                                        placeholder="SKU"
+                                                        placeholder="variant name"
                                                     />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input
-                                                        value={variant.option1_name || ""}
-                                                        onChange={e => handleVariantChange(idx, "option1_name", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option1 Name"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={variant.option1_value || ""}
-                                                        onChange={e => handleVariantChange(idx, "option1_value", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option1 Value"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={variant.option2_name || ""}
-                                                        onChange={e => handleVariantChange(idx, "option2_name", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option2 Name"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={variant.option2_value || ""}
-                                                        onChange={e => handleVariantChange(idx, "option2_value", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option2 Value"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={variant.option3_name || ""}
-                                                        onChange={e => handleVariantChange(idx, "option3_name", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option3 Name"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={variant.option3_value || ""}
-                                                        onChange={e => handleVariantChange(idx, "option3_value", e.target.value)}
-                                                        className="min-w-[100px]"
-                                                        placeholder="Option3 Value"
-                                                    />
+                                                    {variant.options.map((option, optIdx) => (
+                                                        <div key={optIdx} className="flex flex-wrap gap-2 mb-2">
+                                                            <Input
+                                                                value={option.name}
+                                                                onChange={e => handleOptionChange(idx, optIdx, "name", e.target.value)}
+                                                                placeholder="Option Name"
+                                                                className={"flex-1 "}
+                                                            />
+                                                                <button type={'button'}
+                                                                    onClick={() => {
+                                                                        const updatedVariants = [...data.variants];
+                                                                        updatedVariants[idx].options = updatedVariants[idx].options.filter((_, i) => i !== optIdx);
+                                                                        setData("variants", updatedVariants);
+                                                                    }}
+                                                                    disabled={variant.options.length === 1}
+                                                                >
+                                                                    <Trash2 className={'w-5 text-red-700'}/>
+                                                                </button>
+                                                        </div>
+
+                                                    ))}
+                                                    <button type={'button'}
+                                                        onClick={() => {
+                                                            const updatedVariants = [...data.variants];
+                                                            updatedVariants[idx].options.push({ name: ""});
+                                                            setData("variants", updatedVariants);
+                                                        }}
+                                                    >
+                                                        Add Option
+                                                    </button>
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input

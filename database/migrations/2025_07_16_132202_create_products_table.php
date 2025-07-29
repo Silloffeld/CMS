@@ -30,12 +30,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             // Option Columns
-            $table->string('option1_name')->nullable();
-            $table->string('option1_value')->nullable();
-            $table->string('option2_name')->nullable();
-            $table->string('option2_value')->nullable();
-            $table->string('option3_name')->nullable();
-            $table->string('option3_value')->nullable();
+            $table->string('options')->nullable();
             // Variant info
             $table->string('sku')->nullable();
             $table->float('grams')->nullable();
@@ -51,18 +46,6 @@ return new class extends Migration {
             $table->string('weight_unit')->nullable();
             $table->string('tax_code')->nullable();
             $table->decimal('cost_per_item', 10, 2)->nullable();
-            // Google Shopping
-            $table->string('google_product_category')->nullable();
-            $table->string('google_gender')->nullable();
-            $table->string('google_age_group')->nullable();
-            $table->string('google_mpn')->nullable();
-            $table->string('google_condition')->nullable();
-            $table->string('google_custom_product')->nullable();
-            $table->string('google_custom_label_0')->nullable();
-            $table->string('google_custom_label_1')->nullable();
-            $table->string('google_custom_label_2')->nullable();
-            $table->string('google_custom_label_3')->nullable();
-            $table->string('google_custom_label_4')->nullable();
             $table->timestamps();
         });
 
