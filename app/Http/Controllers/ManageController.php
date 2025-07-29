@@ -16,9 +16,8 @@ class ManageController extends Controller
         return Inertia::render('admin/manage', [ 'is_super' => auth()->user()->is_super,
             'product' => Product::count(),
             'customer' => Customer::count(),
-            'inventory' => Inventory::count(),
             'productData' => Product::with('variants')->get(),
-            'inventoryData' => Inventory::all(),]);
+            'inventoryData' => ProductVariant::with('product')->get()]);
     }
     public function deleteManage(Request $request)
     {

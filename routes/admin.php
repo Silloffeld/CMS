@@ -14,12 +14,14 @@ Route::middleware(['isAdmin',/*'verified'*/])->group(function () {
     Route::get('addAdmin', [AdminController::class, 'addAdmin']) -> name('admin.add');
 
     Route::post('addAdmin', [AdminController::class, 'storeAdmin']) -> name('admin.addAdmin');
-    Route::delete('addAdmin/{id}', [AdminController::class, 'deleteAdmin']) -> name('admin.delete');
+    Route::delete('addAdmin', [AdminController::class, 'deleteAdmin']) -> name('admin.delete');
 
     Route::get('import',[AdminController::class, 'import']) -> name('admin.import');
     Route::post('import', [AdminController::class, 'StoreImport']) -> name('admin.import');
 
     Route::get('manage', [ManageController::class, 'manage']) -> name('admin.manage');
+    Route::delete('manage ', [ManageController::class, 'deleteManage']) -> name('admin.delete');
+
     Route::get('editProduct/{product}', [ManageController::class, 'editProduct']) -> name('admin.editProduct');
     Route::post('editProduct/{product}', [ManageController::class, 'updateProduct']) -> name('admin.editProduct');
     Route::get('addProduct', [ManageController::class, 'addProduct']) -> name('admin.addProduct');
