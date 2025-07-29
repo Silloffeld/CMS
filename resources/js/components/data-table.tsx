@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Search, Eye, Edit, Trash2,CircleFadingPlus} from "lucide-react"
+import { Search, Eye, Edit, Trash2, } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
 interface ProductData {
     id: number
@@ -33,6 +33,7 @@ interface SimpleProductTableProps {
     addLink:string
 }
 
+
 export default function DataTable({ productData  ,title , editLink , addLink}: SimpleProductTableProps) {
     const [searchTerm, setSearchTerm] = useState("")
 
@@ -40,6 +41,26 @@ export default function DataTable({ productData  ,title , editLink , addLink}: S
     const filteredData = productData.filter((product) =>
         Object.values(product).some((value) => value?.toString().toLowerCase().includes(searchTerm.toLowerCase())),
     )
+    const handleAction = (action: "view" | "delete", product: ProductData) => {
+        if (action === "view") {
+            // Example: You can route to a view page, open a modal, etc.
+            // For now, we'll just alert the product's details
+            alert(`View product: ${product.title || product.id}`)
+            // Example: If you have a route for viewing details:
+            // router.push(`/products/${product.id}`)
+        }
+        if (action === "delete") {
+            // Optionally, confirm deletion
+            if (window.confirm(`Are you sure you want to delete ${product.title || "this product"}?`)) {
+                router.delete(route('admin.manage'), {
+                    data: {
+                        id: product.id,
+                        title: product.title,
+                    }
+                });
+            }
+        }
+    }
     return (
         <Card className="w-full">
             <CardHeader>
@@ -139,7 +160,7 @@ export default function DataTable({ productData  ,title , editLink , addLink}: S
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                            </div>
+                                                </div>
                                         </TableCell>
                                     </TableRow>
                                 ))

@@ -7,6 +7,7 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Inertia\Inertia;
 
 class ManageController extends Controller
@@ -18,6 +19,13 @@ class ManageController extends Controller
             'inventory' => Inventory::count(),
             'productData' => Product::with('variants')->get(),
             'inventoryData' => Inventory::all(),]);
+    }
+    public function deleteManage(Request $request)
+    {
+        $id = $request->input('id');
+        $title = $request->input('title');
+        Product::findOrFail($id)->delete();
+        return back()->with('success', $title . ' deleted!');
     }
     public function editProduct($id)
     {
