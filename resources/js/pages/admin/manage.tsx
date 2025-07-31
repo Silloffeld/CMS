@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useState } from 'react'
 import DataTable  from '@/components/data-table';
+import InventoryTable from '@/components/InventoryTable';
 
 
 function Modal({ children , }: { children: ReactNode }) {
@@ -63,7 +64,7 @@ function Manage({ is_super, product, customer, inventory , productData, inventor
                     <button className={"bg-secondary bg-radial text-xl m-2 underline p-2 rounded text-left hover:to-95% hover:from-white/20"}
                             onClick={() => {setSelected(selected === 'product2' ? null : 'product2')}}>inventory { selected == 'product2' &&
                         <div className={'m-2'}>
-                        <DataTable productData={inventoryData} title={"inventory"} editLink={'admin.editProduct'} addLink={'admin.addProduct'}/>
+                        <InventoryTable inventoryData={inventoryData} editLink={'admin.editProduct'} addLink={'admin.addProduct'}/>
                         </div>}</button>
                 </div>
             )}
