@@ -40,6 +40,7 @@ export default function AddProduct() {
                 price: "",
             }
         ],
+        images: [] as File[]
     });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -98,7 +99,19 @@ export default function AddProduct() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        post(route("admin.addProduct")) // make sure this route exists in your routes/web.php
+        post(route("admin.addProduct"))
+    }
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+            setData("images", [
+                ...(data.images as File[]),
+                ...Array.from(e.target.files)
+            ]);
+        }
+    }
+    function handleRemoveImage(idx: number) {
+        setData("images", (data.images as File[]).filter((_, i) => i !== idx));
     }
 
     return (
@@ -270,6 +283,34 @@ export default function AddProduct() {
                                 <Button type="button" onClick={addVariant} variant="secondary">
                                     Add Variant
                                 </Button>
+                            </div>
+                        </div>
+                        {/* Image upload section */}
+                        <div className="md:col-span-2 mt-2">
+                            <label className="block text-xs font-medium mb-1">Images</label>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="block w-full border rounded px-2 py-1 text-sm"
+                            />
+                            <div className="flex flex-wrap gap-3 mt-2">
+                                {data.images && (data.images as File[]).length > 0 &&
+                                    (data.images as File[]).map((file: File, idx: number) => (
+                                        <div key={idx} className="flex items-center gap-2">
+                                            <span className="text-xs">{file.name}</span>
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => handleRemoveImage(idx)}
+                                            >
+                                                Remove
+                                            </Button>
+                                        </div>
+                                    ))
+                                }
                             </div>
                         </div>
                     </CardContent>

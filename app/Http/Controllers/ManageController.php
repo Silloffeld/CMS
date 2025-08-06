@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Inventory;
+use App\Models\Media;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ManageController extends Controller
@@ -130,7 +132,25 @@ class ManageController extends Controller
             'variants.*.option3_value' => 'nullable|string',
             'variants.*.price' => 'nullable|string',
         ]);
+        $images = $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ]);
         Product::with('variants')->create($validated);
+        Product::with('media') -> create([]);
+        foreach ($request->file('images') as $file) {
+            // Store each file and get the path
+            $path = $file->store('products', 'public');
+
+            $originalName = $file->getClientOriginalName();
+
+            Media::with('product')->create([
+                'path' => Storage::disk('public')->url($path),
+                'variant' => $request->input('variant') // make variant selectable based on the uploaded variants.,
+            ]);
+        }
+
+
         return redirect()->route('admin.manage');
 }
 
