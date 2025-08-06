@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Product extends Model implements HasMedia
+class Product extends Model
 {
-    use HasFactory, InteractsWithMedia;
-
     protected $fillable = [
         'handle',
         'title',
@@ -29,5 +27,8 @@ class Product extends Model implements HasMedia
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+    public function media() {
+        return $this->hasMany(Media::class);
     }
 }
