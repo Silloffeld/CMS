@@ -40,7 +40,8 @@ export default function AddProduct() {
                 price: "",
             }
         ],
-        images: [] as File[]
+        images: [] as File[],
+        variantChosen: [] as string[]
     });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -99,6 +100,7 @@ export default function AddProduct() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
+        console.log(data.variants);
         post(route("admin.addProduct"))
     }
 
@@ -193,7 +195,7 @@ export default function AddProduct() {
                     {/* Editable Variants Table */}
                     <CardHeader>
                         <CardTitle className="text-base mt-6">Variants</CardTitle>
-                        <CardDescription>Add one or more product variants</CardDescription>
+                        <CardDescription>Add one or more product variants. for example 1 variant = size and 1 variant = color</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
@@ -308,6 +310,17 @@ export default function AddProduct() {
                                             >
                                                 Remove
                                             </Button>
+                                            <Input
+                                                type="text"
+                                                value={data.variantChosen[idx] || ""}
+                                                onChange={e => {
+                                                const updated = [...data.variantChosen];
+                                                updated[idx] = e.target.value;
+                                                setData('variantChosen', updated);
+                                            }}
+                                                className={'text-white'}
+                                                name={'variantChosen'}
+                                                />
                                         </div>
                                     ))
                                 }

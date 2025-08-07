@@ -8,7 +8,8 @@ class Media extends Model
 {
     protected $fillable = [
         'variant',
-        'path'
+        'path',
+        'product_id',
     ];
 
     public function product(){
