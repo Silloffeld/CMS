@@ -133,7 +133,15 @@ export default function AddProduct() {
         if (chosen && menu.some(opt => opt.value === chosen)) return chosen;
         return menu[0]?.value || "";
     }
-
+    function variantGroup() {
+        const groups: Record<string, File[]> = {};
+        (data.images as File[]).forEach((file, idx) => {
+            const variant = data.variantChosen[idx] || "Unassigned";
+            if (!groups[variant]) groups[variant] = [];
+            groups[variant].push(file);
+        });
+        return groups;
+    }
     return (
         <AppLayout>
             <Card className="w-full max-w-4xl mx-auto">
@@ -304,46 +312,53 @@ export default function AddProduct() {
                         </div>
                         <div className="md:col-span-2 mt-2">
                             <label className="block text-xs font-medium mb-1">Images</label>
-                            <input
+                            <p className={"text-white/70"}>Select multiple images then select the corresponding option/category presuming you have added at least one category/variant.</p>
+                            <Input
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 onChange={handleFileChange}
                                 className="block w-full border rounded px-2 py-1 text-sm"
                             />
-                            <div className="flex flex-wrap gap-3 mt-2">
-                                {data.images && (data.images as File[]).length > 0 &&
-                                    (data.images as File[]).map((file: File, idx: number) => (
-                                        <div key={idx} className="flex items-center gap-2">
-                                            <span className="text-xs">{file.name}</span>
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() => handleRemoveImage(idx)}
-                                            >
-                                                Remove
-                                            </Button>
-                                            <select
-                                                value={getVariantChosenValue(idx)}
-                                                onChange={e => {
-                                                    const updated = [...data.variantChosen];
-                                                    updated[idx] = e.target.value;
-                                                    setData('variantChosen', updated);
-                                                }}
-                                                className="border rounded px-2 py-1 text-sm bg-white text-black"
-                                                name="variantChosen"
-                                            >
-                                                {getVariantOptionMenu().map(({ label, value }) => (
-                                                    <option key={value} value={value}>
-                                                        {label}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    ))
-                                }
-                            </div>
+                            {Object.entries(variantGroup()).map(([variant, files]) => (
+                                <div key={variant} className="mb-6">
+                                    <h4 className="font-semibold text-sm mb-2">{variant === "Unassigned" ? "Unassigned" : variant}</h4>
+                                    <div className="flex flex-wrap gap-3">
+                                        {files.map((file, idx) => {
+                                            const imageIdx = data.images.findIndex(f => f === file);
+                                            return (
+                                                <div key={imageIdx} className="flex items-center gap-2">
+                                                    <span className="text-xs">{file.name}</span>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleRemoveImage(imageIdx)}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                    <select
+                                                        value={getVariantChosenValue(imageIdx)}
+                                                        onChange={e => {
+                                                            const updated = [...data.variantChosen];
+                                                            updated[imageIdx] = e.target.value;
+                                                            setData('variantChosen', updated);
+                                                        }}
+                                                        className="border rounded px-2 py-1 text-sm bg-white text-black"
+                                                        name="variantChosen"
+                                                    >
+                                                        {getVariantOptionMenu().map(({ label, value }) => (
+                                                            <option key={value} value={value}>
+                                                                {label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </CardContent>
                 </form>
