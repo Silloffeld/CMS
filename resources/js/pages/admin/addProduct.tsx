@@ -117,8 +117,8 @@ export default function AddProduct() {
 
     function getVariantOptionMenu() {
         const menu: { label: string, value: string }[] = [];
-        (data.variants as ProductVariant[]).forEach((variant, vIdx) => {
-            variant.options.forEach((option, oIdx) => {
+        (data.variants as ProductVariant[]).forEach((variant, ) => {
+            variant.options.forEach((option, ) => {
                 const label = `${variant.variantName || 'Variant'}: ${option.name}`;
                 const value = `${variant.variantName}:${option.name}`;
                 menu.push({ label, value });
