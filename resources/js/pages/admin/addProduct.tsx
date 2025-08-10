@@ -18,7 +18,6 @@ interface VariantOption {
     name: string;
 }
 
-
 export default function AddProduct() {
     const { data, setData, post, processing, errors } = useForm({
         handle: "",
@@ -100,7 +99,6 @@ export default function AddProduct() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        console.log(data.variants);
         post(route("admin.addProduct"))
     }
 
@@ -114,6 +112,26 @@ export default function AddProduct() {
     }
     function handleRemoveImage(idx: number) {
         setData("images", (data.images as File[]).filter((_, i) => i !== idx));
+        setData("variantChosen", (data.variantChosen as string[]).filter((_, i) => i !== idx));
+    }
+
+    function getVariantOptionMenu() {
+        const menu: { label: string, value: string }[] = [];
+        (data.variants as ProductVariant[]).forEach((variant, vIdx) => {
+            variant.options.forEach((option, oIdx) => {
+                const label = `${variant.variantName || 'Variant'}: ${option.name}`;
+                const value = `${variant.variantName}:${option.name}`;
+                menu.push({ label, value });
+            });
+        });
+        return menu;
+    }
+
+    function getVariantChosenValue(idx: number) {
+        const chosen = data.variantChosen[idx] || "";
+        const menu = getVariantOptionMenu();
+        if (chosen && menu.some(opt => opt.value === chosen)) return chosen;
+        return menu[0]?.value || "";
     }
 
     return (
@@ -191,8 +209,6 @@ export default function AddProduct() {
                             </Button>
                         </div>
                     </CardContent>
-
-                    {/* Editable Variants Table */}
                     <CardHeader>
                         <CardTitle className="text-base mt-6">Variants</CardTitle>
                         <CardDescription>Add one or more product variants. for example 1 variant = size and 1 variant = color</CardDescription>
@@ -229,25 +245,24 @@ export default function AddProduct() {
                                                                 placeholder="Option Name"
                                                                 className={"flex-1 "}
                                                             />
-                                                                <button type={'button'}
+                                                            <button type={'button'}
                                                                     onClick={() => {
                                                                         const updatedVariants = [...data.variants];
                                                                         updatedVariants[idx].options = updatedVariants[idx].options.filter((_, i) => i !== optIdx);
                                                                         setData("variants", updatedVariants);
                                                                     }}
                                                                     disabled={variant.options.length === 1}
-                                                                >
-                                                                    <Trash2 className={'w-5 text-red-700'}/>
-                                                                </button>
+                                                            >
+                                                                <Trash2 className={'w-5 text-red-700'}/>
+                                                            </button>
                                                         </div>
-
                                                     ))}
                                                     <button type={'button'}
-                                                        onClick={() => {
-                                                            const updatedVariants = [...data.variants];
-                                                            updatedVariants[idx].options.push({ name: ""});
-                                                            setData("variants", updatedVariants);
-                                                        }}
+                                                            onClick={() => {
+                                                                const updatedVariants = [...data.variants];
+                                                                updatedVariants[idx].options.push({ name: ""});
+                                                                setData("variants", updatedVariants);
+                                                            }}
                                                     >
                                                         Add Option
                                                     </button>
@@ -287,7 +302,6 @@ export default function AddProduct() {
                                 </Button>
                             </div>
                         </div>
-                        {/* Image upload section */}
                         <div className="md:col-span-2 mt-2">
                             <label className="block text-xs font-medium mb-1">Images</label>
                             <input
@@ -310,17 +324,22 @@ export default function AddProduct() {
                                             >
                                                 Remove
                                             </Button>
-                                            <Input
-                                                type="text"
-                                                value={data.variantChosen[idx] || ""}
+                                            <select
+                                                value={getVariantChosenValue(idx)}
                                                 onChange={e => {
-                                                const updated = [...data.variantChosen];
-                                                updated[idx] = e.target.value;
-                                                setData('variantChosen', updated);
-                                            }}
-                                                className={'text-white'}
-                                                name={'variantChosen'}
-                                                />
+                                                    const updated = [...data.variantChosen];
+                                                    updated[idx] = e.target.value;
+                                                    setData('variantChosen', updated);
+                                                }}
+                                                className="border rounded px-2 py-1 text-sm bg-white text-black"
+                                                name="variantChosen"
+                                            >
+                                                {getVariantOptionMenu().map(({ label, value }) => (
+                                                    <option key={value} value={value}>
+                                                        {label}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </div>
                                     ))
                                 }
@@ -329,7 +348,6 @@ export default function AddProduct() {
                     </CardContent>
                 </form>
             </Card>
-
         </AppLayout>
     )
 }
