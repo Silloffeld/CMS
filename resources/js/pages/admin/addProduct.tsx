@@ -18,7 +18,6 @@ interface VariantOption {
     name: string;
 }
 
-
 export default function AddProduct() {
     const { data, setData, post, processing, errors } = useForm({
         handle: "",
@@ -40,6 +39,8 @@ export default function AddProduct() {
                 price: "",
             }
         ],
+        images: [] as File[],
+        variantChosen: [] as string[]
     });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -98,9 +99,49 @@ export default function AddProduct() {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        post(route("admin.addProduct")) // make sure this route exists in your routes/web.php
+        post(route("admin.addProduct"))
     }
 
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+            setData("images", [
+                ...(data.images as File[]),
+                ...Array.from(e.target.files)
+            ]);
+        }
+    }
+    function handleRemoveImage(idx: number) {
+        setData("images", (data.images as File[]).filter((_, i) => i !== idx));
+        setData("variantChosen", (data.variantChosen as string[]).filter((_, i) => i !== idx));
+    }
+
+    function getVariantOptionMenu() {
+        const menu: { label: string, value: string }[] = [];
+        (data.variants as ProductVariant[]).forEach((variant, ) => {
+            variant.options.forEach((option, ) => {
+                const label = `${variant.variantName || 'Variant'}: ${option.name}`;
+                const value = `${variant.variantName}:${option.name}`;
+                menu.push({ label, value });
+            });
+        });
+        return menu;
+    }
+
+    function getVariantChosenValue(idx: number) {
+        const chosen = data.variantChosen[idx] || "";
+        const menu = getVariantOptionMenu();
+        if (chosen && menu.some(opt => opt.value === chosen)) return chosen;
+        return menu[0]?.value || "";
+    }
+    function variantGroup() {
+        const groups: Record<string, File[]> = {};
+        (data.images as File[]).forEach((file, idx) => {
+            const variant = data.variantChosen[idx] || "Unassigned";
+            if (!groups[variant]) groups[variant] = [];
+            groups[variant].push(file);
+        });
+        return groups;
+    }
     return (
         <AppLayout>
             <Card className="w-full max-w-4xl mx-auto">
@@ -176,11 +217,9 @@ export default function AddProduct() {
                             </Button>
                         </div>
                     </CardContent>
-
-                    {/* Editable Variants Table */}
                     <CardHeader>
                         <CardTitle className="text-base mt-6">Variants</CardTitle>
-                        <CardDescription>Add one or more product variants</CardDescription>
+                        <CardDescription>Add one or more product variants. for example 1 variant = size and 1 variant = color</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
@@ -214,25 +253,24 @@ export default function AddProduct() {
                                                                 placeholder="Option Name"
                                                                 className={"flex-1 "}
                                                             />
-                                                                <button type={'button'}
+                                                            <button type={'button'}
                                                                     onClick={() => {
                                                                         const updatedVariants = [...data.variants];
                                                                         updatedVariants[idx].options = updatedVariants[idx].options.filter((_, i) => i !== optIdx);
                                                                         setData("variants", updatedVariants);
                                                                     }}
                                                                     disabled={variant.options.length === 1}
-                                                                >
-                                                                    <Trash2 className={'w-5 text-red-700'}/>
-                                                                </button>
+                                                            >
+                                                                <Trash2 className={'w-5 text-red-700'}/>
+                                                            </button>
                                                         </div>
-
                                                     ))}
                                                     <button type={'button'}
-                                                        onClick={() => {
-                                                            const updatedVariants = [...data.variants];
-                                                            updatedVariants[idx].options.push({ name: ""});
-                                                            setData("variants", updatedVariants);
-                                                        }}
+                                                            onClick={() => {
+                                                                const updatedVariants = [...data.variants];
+                                                                updatedVariants[idx].options.push({ name: ""});
+                                                                setData("variants", updatedVariants);
+                                                            }}
                                                     >
                                                         Add Option
                                                     </button>
@@ -272,10 +310,59 @@ export default function AddProduct() {
                                 </Button>
                             </div>
                         </div>
+                        <div className="md:col-span-2 mt-2">
+                            <label className="block text-xs font-medium mb-1">Images</label>
+                            <p className={"text-white/70"}>Select multiple images then select the corresponding option/category presuming you have added at least one category/variant.</p>
+                            <Input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="block w-full border rounded px-2 py-1 text-sm"
+                            />
+                            {Object.entries(variantGroup()).map(([variant, files]) => (
+                                <div key={variant} className="mb-6">
+                                    <h4 className="font-semibold text-sm mb-2">{variant === "Unassigned" ? "Unassigned" : variant}</h4>
+                                    <div className="flex flex-wrap gap-3">
+                                        {files.map((file, idx) => {
+                                            const imageIdx = data.images.findIndex(f => f === file);
+                                            return (
+                                                <div key={imageIdx} className="flex items-center gap-2">
+                                                    <span className="text-xs">{file.name}</span>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleRemoveImage(imageIdx)}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                    <select
+                                                        value={getVariantChosenValue(imageIdx)}
+                                                        onChange={e => {
+                                                            const updated = [...data.variantChosen];
+                                                            updated[imageIdx] = e.target.value;
+                                                            setData('variantChosen', updated);
+                                                        }}
+                                                        className="border rounded px-2 py-1 text-sm bg-white text-black"
+                                                        name="variantChosen"
+                                                    >
+                                                        {getVariantOptionMenu().map(({ label, value }) => (
+                                                            <option key={value} value={value}>
+                                                                {label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </CardContent>
                 </form>
             </Card>
-
         </AppLayout>
     )
 }

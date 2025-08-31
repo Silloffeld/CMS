@@ -66,12 +66,6 @@ export default function InventoryTable({
     // Parse options safely
     const parseOption = (option?: string | Record<string, any>) => {
         if (!option) return "-";
-        if (typeof option === "object") {
-            // Already an object
-            return Object.entries(option)
-                .map(([key, val]) => `${key}: ${val}`)
-                .join(", ");
-        }
         try {
             const parsed = JSON.parse(option);
             if (typeof parsed === "object" && parsed !== null) {

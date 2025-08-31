@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Inventory;
+use App\Models\Media;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ManageController extends Controller
@@ -105,7 +107,8 @@ class ManageController extends Controller
     public function addProduct(Request $request){
             return inertia::render('admin/addProduct', []);
     }
-    public function storeProduct(Request $request){
+    public function storeProduct(Request $request)
+    {
         $validated = $request->validate([
             'handle' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -119,17 +122,71 @@ class ManageController extends Controller
             'seo_description' => 'nullable|string',
             'status' => 'nullable|string',
             'variants' => 'array',
-            'variants.*.id' => 'integer|exists:product_variants,id',
-            'variants.*.sku' => 'nullable|string',
-            'variants.*.option1_name' => 'nullable|string',
-            'variants.*.option1_value' => 'nullable|string',
-            'variants.*.option2_name' => 'nullable|string',
-            'variants.*.option2_value' => 'nullable|string',
-            'variants.*.option3_name' => 'nullable|string',
-            'variants.*.option3_value' => 'nullable|string',
+            'variants.*.variantName' => 'nullable|string',
+            'variants.*.options' => 'array',
             'variants.*.price' => 'nullable|string',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'variantChosen' => 'array',
+            'variantChosen.*' => 'string',
         ]);
-        Product::with('variants')->create($validated);
+
+        $optionArrays = [];
+        foreach ($validated['variants'] as $variant) {
+            $optionValues = [];
+            foreach ($variant['options'] as $option) {
+                if (!empty($option['name'])) {
+                    $optionValues[] = $option['name'];
+                }
+            }
+            if (!empty($optionValues)) {
+                $optionArrays[] = $optionValues;
+            }
+        }
+
+        $result = [[]];
+        foreach ($optionArrays as $array) {
+            $tmp = [];
+            foreach ($result as $product) {
+                foreach ($array as $value) {
+                    $tmp[] = array_merge($product, [$value]);
+                }
+            }
+            $result = $tmp;
+        }
+
+        $optionNames = array_map(function($variant) {
+            return $variant['variantName'];
+        }, $validated['variants']);
+
+        $combinations = [];
+        foreach ($result as $combo) {
+            $assoc = [];
+            foreach ($optionNames as $i => $name) {
+                $assoc[$name] = $combo[$i];
+            }
+            $combinations[] = $assoc;
+        }
+
+        $product = Product::create($validated);
+
+        foreach ($combinations as $combo) {
+            $product->variants()->create([
+                'options' => json_encode($combo),
+            ]);
+        }
+
+        // --- Save images ---
+        foreach ($request->file('images', []) as $i => $file) {
+            $path = $file->store('products', 'public');
+            Media::create([
+                'path' => Storage::disk('public')->url($path),
+                'product_id' => $product->id,
+                'variant' => $validated['variantChosen'][$i] ?? '',
+            ]);
+        }
+
+
         return redirect()->route('admin.manage');
 }
 
