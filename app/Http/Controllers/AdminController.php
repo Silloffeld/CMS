@@ -7,6 +7,7 @@ use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,12 +81,13 @@ class AdminController extends Controller
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('admin.dashboard', absolute: false));
+        if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('admin.dashboard', absolute: false));
+        }
+        else return back()->withErrors([]);
     }
+
 
     public function storeImport(Request $request)
     {

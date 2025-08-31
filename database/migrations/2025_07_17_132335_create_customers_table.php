@@ -13,7 +13,7 @@ class CreateCustomersTable extends Migration
             $table->bigInteger('customer_id')->nullable(); // Customer ID from Shopify
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('email')->nullable();
+            $table->string('email');
             $table->boolean('accepts_email_marketing')->default(false)->nullable();
             $table->string('default_address_company')->nullable();
             $table->string('default_address_address1')->nullable();
@@ -21,6 +21,7 @@ class CreateCustomersTable extends Migration
             $table->string('default_address_address3')->nullable();
             $table->string('default_address_city')->nullable();
             $table->string('default_address_province_code')->nullable();
+            $table->string('password');
             $table->timestamps();
         });
     }
