@@ -17,6 +17,10 @@ class ShopController extends Controller
     public function register(){
         return Inertia::render('shop/register');
     }
+    public function account(){
+       $user = Auth::guard('web')->user();
+        return Inertia::render('shop/account' , [ 'user' => $user ]);
+    }
     public function authenticate(LoginRequest $request): RedirectResponse
     {
         if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
@@ -38,4 +42,6 @@ class ShopController extends Controller
             Customer::create(['email' => $creds['email'], 'password' => bcrypt($creds['password'])]);
             return Inertia::render('shop/login');}
     }
+
+
 }
