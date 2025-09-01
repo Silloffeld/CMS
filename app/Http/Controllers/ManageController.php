@@ -9,13 +9,14 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ManageController extends Controller
 {
     public function manage(){
-        return Inertia::render('admin/manage', [ 'is_super' => auth()->user()->is_super,
+        return Inertia::render('admin/manage', [ 'is_super' => Auth::guard('admin')->user()->is_super,
             'product' => Product::count(),
             'customer' => Customer::count(),
             'productData' => Product::with('variants')->get(),

@@ -19,22 +19,20 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admins = User::all();
         return Inertia::render('admin/auth/login', [
-            'admins' => $admins
         ]);
     }
     public function addAdmin()
     {
         // Only the head admin can access this page
-        if (!auth()->user()->is_super) {
+        if (!Auth::guard('admin')->user()->is_super) {
             abort(403, 'Only the head admin can manage other admins.');
         }
 
         $admins = User::where('is_admin', true)->get();
         return Inertia::render('admin/addAdmin', [
             'admins' => $admins,
-            'is_super' => auth()->user()->is_super
+            'is_super' => Auth::guard('admin')->user()->is_super
         ]);
     }
 
@@ -76,16 +74,16 @@ class AdminController extends Controller
 }
     public function dashboard()
     {
-        return Inertia::render('admin/dashboard',[]);
+        return Inertia::render('admin/dashboard',[ 'user ' => Auth::user()]);
     }
 
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request)
     {
         if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+            return redirect()->intended(route('admin.dashboard'));
+
         }
-        else return back()->withErrors([]);
+     else return back()->withErrors([]);
     }
 
 

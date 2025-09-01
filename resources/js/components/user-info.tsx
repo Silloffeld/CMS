@@ -2,8 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import { type User } from '@/types';
 
-export function UserInfo({ user, showEmail = false }: { user: User; showEmail?: boolean }) {
+export function UserInfo({ user, showEmail = false }: { user?: User; showEmail?: boolean }) {
     const getInitials = useInitials();
+
+    if (!user) {
+        // Show a fallback, or return null, or a skeleton/loading
+        return (
+            <div className="flex items-center h-8">
+                <span className="text-muted-foreground text-sm">No user data</span>
+            </div>
+        );
+    }
 
     return (
         <>

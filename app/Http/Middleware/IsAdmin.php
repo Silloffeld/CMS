@@ -9,17 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IsAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return \Symfony\Component\HttpFoundation\Response
-     */public function handle(Request $request, Closure $next): Response
-{
-    if (!Auth::check() || !Auth::user()->is_admin) {
-        return redirect()->route('admin.login');
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (!Auth::guard('admin')->check() || !Auth::guard('admin')->user()->is_admin) {
+            return redirect()->route('admin.login');
+        }
+        return $next($request);
     }
-    return $next($request);
-}
 }
