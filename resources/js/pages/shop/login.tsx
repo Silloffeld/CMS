@@ -19,9 +19,13 @@ type LoginForm = {
 interface LoginProps {
     status?: string;
     canResetPassword: boolean;
+    flash?: {
+        error?: string;
+        success?: string;
+    };
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login({ status, canResetPassword ,flash}: LoginProps) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
@@ -30,14 +34,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.login'), {
+        post(route('shop.login'), {
             onFinish: () => reset('password'),
         });
     };
 
     return (
-        <AuthLayout title="Log in to your admin account" description="Enter your email and password below to log in">
-            <Head title="Log in Admin" />
+        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+            <Head title="Log in" />
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
@@ -94,6 +98,18 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
+                    {flash?.error && (
+                        <div className="mb-4 text-center text-sm font-medium text-red-600">
+                            {flash.error}
+                        </div>
+                    )}
+                </div>
+
+                <div className="text-center text-sm text-muted-foreground">
+                    Don't have an account?{' '}
+                    <TextLink href={route('shop.register')} tabIndex={5}>
+                        Sign up
+                    </TextLink>
                 </div>
             </form>
 

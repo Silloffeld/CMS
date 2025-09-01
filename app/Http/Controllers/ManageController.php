@@ -32,7 +32,6 @@ class ManageController extends Controller
     {
         $product = Product::with('variants')->findOrFail($id);
 
-        // If using Inertia + React as frontend
         return inertia('admin/editProduct', [
             'product' => $product,
         ]);
