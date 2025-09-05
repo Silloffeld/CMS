@@ -12,14 +12,14 @@ use Inertia\Inertia;
 class ShopController extends Controller
 {
     public function login(){
-        return Inertia::render('shop/login');
+        return Inertia::render('Shop/login');
     }
     public function register(){
-        return Inertia::render('shop/register');
+        return Inertia::render('Shop/register');
     }
     public function account(){
        $user = Auth::guard('web')->user();
-        return Inertia::render('shop/account' , [ 'user' => $user ]);
+        return Inertia::render('Shop/account' , [ 'user' => $user ]);
     }
     public function authenticate(LoginRequest $request): RedirectResponse
     {
@@ -40,7 +40,7 @@ class ShopController extends Controller
             return back()->with('error', 'Password does not match.');
         }else {
             Customer::create(['email' => $creds['email'], 'password' => bcrypt($creds['password'])]);
-            return Inertia::render('shop/login');}
+            return Inertia::render('Shop/login');}
     }
 
 
