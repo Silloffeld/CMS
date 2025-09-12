@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Cart;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use function Pest\Laravel\get;
 
 class ShopController extends Controller
 {
@@ -43,5 +45,9 @@ class ShopController extends Controller
             return Inertia::render('Shop/login');}
     }
 
+    public function cart(){
+        $user = Auth::guard('web')->user();
+        return Inertia::render('Shop/cart' , [ 'cart'  => Cart::where('user_id' , $user->id()->get())]);
+    }
 
 }
