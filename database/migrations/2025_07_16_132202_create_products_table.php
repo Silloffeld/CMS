@@ -7,13 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        // Products Table
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('handle')->index();
             $table->string('title')->nullable();
             $table->text('body_html')->nullable();
-            $table->string('vendor')->nullable();
+            $table->string('vendor')->nullable(); // alleen als bedrijf meerdere merken verkoopt
             $table->string('product_category')->nullable();
             $table->string('type')->nullable();
             $table->string('tags')->nullable();
@@ -30,7 +29,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             // Option Columns
-            $table->string('options')->nullable();
+            $table->json('options')->nullable();
             // Variant info
             $table->string('sku')->nullable();
             $table->float('grams')->nullable();
@@ -49,7 +48,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        // Spatie Media Library creates its own 'media' table via its migration.
+
     }
 
     public function down(): void

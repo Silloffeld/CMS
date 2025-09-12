@@ -14,4 +14,6 @@ route::post('/register',[ShopController::class , 'storeAccount'] ) -> name('shop
 Route::get('/account',[ShopController::class , 'account'] ) -> name('shop.account');
 //TODO:update account
 
-Route::get('/cart{id}',[ShopController::class , 'cart'] ) -> name('shop.cart');
+Route::get('/cart/{id}',[ShopController::class , 'cart'] ) -> name('shop.cart');
+
+Route::get('/products',[ShopController::class , 'showProducts']) -> name('shop.products');

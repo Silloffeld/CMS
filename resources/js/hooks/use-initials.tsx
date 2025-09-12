@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 export function useInitials() {
-    return useCallback((fullName: string): string => {
+    return useCallback((fullName?: string): string => {
+        if (!fullName) return 'user not defined / something went wrong , please contact developer';
         const names = fullName.trim().split(' ');
-
         if (names.length === 0) return '';
         if (names.length === 1) return names[0].charAt(0).toUpperCase();
 

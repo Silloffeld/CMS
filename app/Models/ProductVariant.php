@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ProductVariant extends Model
 {
     use HasFactory;
-
+    protected $casts = [
+        'options' => 'array',
+    ];
     protected $fillable = [
         'product_id',
         'options',

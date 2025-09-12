@@ -180,7 +180,7 @@ export default function AddProduct() {
                             {errors.body_html && <div className="text-destructive text-xs">{errors.body_html}</div>}
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Vendor</label>
+                            <label className="block text-xs font-medium mb-1">Vendor(merknaam)</label>
                             <Input name="vendor" value={data.vendor} onChange={handleChange} placeholder="Vendor" />
                         </div>
                         <div>

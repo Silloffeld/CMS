@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
-use App\Models\Inventory;
 use App\Models\Media;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -64,6 +63,10 @@ class ManageController extends Controller
             'variants.*.option3_name' => 'nullable|string',
             'variants.*.option3_value' => 'nullable|string',
             'variants.*.price' => 'nullable|string',
+            'images' => 'array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'variantChosen' => 'array',
+            'variantChosen.*' => 'string',
         ]);
 
         // 2. Update the product
@@ -100,9 +103,19 @@ class ManageController extends Controller
             }
         }
 
-        // 4. Redirect back (or return response)
-        return redirect()->route('admin.editProduct', $product->id)
-            ->with('success', 'Product and variants updated.');
+        // 4. Handle new images (same as addProduct)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images', []) as $i => $file) {
+                $path = $file->store('products', 'public');
+                Media::create([
+                    'path' => Storage::disk('public')->url($path),
+                    'product_id' => $product->id,
+                    'variant' => $validated['variantChosen'][$i] ?? '',
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.manage')->with('success', 'Product updated successfully!');
     }
 
     public function addProduct(Request $request){
@@ -126,7 +139,7 @@ class ManageController extends Controller
             'variants.*.variantName' => 'nullable|string',
             'variants.*.options' => 'array',
             'variants.*.price' => 'nullable|string',
-            'images' => 'required|array',
+            'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'variantChosen' => 'array',
             'variantChosen.*' => 'string',
@@ -186,6 +199,7 @@ class ManageController extends Controller
                 'variant' => $validated['variantChosen'][$i] ?? '',
             ]);
         }
+
 
 
         return redirect()->route('admin.manage');

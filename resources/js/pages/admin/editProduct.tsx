@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Link, useForm } from "@inertiajs/react"
 import AppLayout from '@/layouts/app-layout';
 import { usePage } from '@inertiajs/react';
+import { Trash2 } from "lucide-react"
 
 interface ProductVariant {
     id: number
@@ -73,6 +74,8 @@ export default function EditProduct({ product }: ProductEditProps) {
                 price: v.price || "",
             }))
             : [],
+        images: [] as File[],
+        variantChosen: [] as string[]
     });
 
     function addVariant() {
@@ -118,6 +121,72 @@ export default function EditProduct({ product }: ProductEditProps) {
         post(route("admin.editProduct", product.id))
     }
 
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files) {
+            setData("images", [
+                ...(data.images as File[]),
+                ...Array.from(e.target.files)
+            ]);
+        }
+    }
+
+    function handleRemoveImage(idx: number) {
+        setData("images", (data.images as File[]).filter((_, i) => i !== idx));
+        setData("variantChosen", (data.variantChosen as string[]).filter((_, i) => i !== idx));
+    }
+
+    function getVariantOptionMenu() {
+        const menu: { label: string, value: string }[] = [];
+        (data.variants as ProductVariant[]).forEach((variant, idx) => {
+            // Create options based on the variant's option names and values
+            const option1 = variant.option1_name && variant.option1_value
+                ? `${variant.option1_name}: ${variant.option1_value}`
+                : null;
+            const option2 = variant.option2_name && variant.option2_value
+                ? `${variant.option2_name}: ${variant.option2_value}`
+                : null;
+            const option3 = variant.option3_name && variant.option3_value
+                ? `${variant.option3_name}: ${variant.option3_value}`
+                : null;
+
+            if (option1) {
+                menu.push({
+                    label: `Variant ${idx + 1}: ${option1}`,
+                    value: `variant_${variant.id}_option1`
+                });
+            }
+            if (option2) {
+                menu.push({
+                    label: `Variant ${idx + 1}: ${option2}`,
+                    value: `variant_${variant.id}_option2`
+                });
+            }
+            if (option3) {
+                menu.push({
+                    label: `Variant ${idx + 1}: ${option3}`,
+                    value: `variant_${variant.id}_option3`
+                });
+            }
+        });
+        return menu;
+    }
+
+    function getVariantChosenValue(idx: number) {
+        const chosen = data.variantChosen[idx] || "";
+        const menu = getVariantOptionMenu();
+        if (chosen && menu.some(opt => opt.value === chosen)) return chosen;
+        return menu[0]?.value || "";
+    }
+
+    function variantGroup() {
+        const groups: Record<string, File[]> = {};
+        (data.images as File[]).forEach((file, idx) => {
+            const variant = data.variantChosen[idx] || "Unassigned";
+            if (!groups[variant]) groups[variant] = [];
+            groups[variant].push(file);
+        });
+        return groups;
+    }
 
     return (
         <AppLayout>
@@ -156,7 +225,7 @@ export default function EditProduct({ product }: ProductEditProps) {
                             {errors.body_html && <div className="text-destructive text-xs">{errors.body_html}</div>}
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Vendor</label>
+                            <label className="block text-xs font-medium mb-1">Vendor(merknaam)</label>
                             <Input name="vendor" value={data.vendor} onChange={handleChange} />
                         </div>
                         <div>
@@ -182,7 +251,7 @@ export default function EditProduct({ product }: ProductEditProps) {
                         </div>
                         <div>
                             <label className="block text-xs font-medium mb-1">Gift Card</label>
-                            <Input name="gift_card" value={data.gift_card}  onChange={handleChange} />
+                            <Input name="gift_card" value={data.gift_card} onChange={handleChange} />
                         </div>
                         <div>
                             <label className="block text-xs font-medium mb-1">SEO Title</label>
@@ -221,6 +290,7 @@ export default function EditProduct({ product }: ProductEditProps) {
                                         <TableHead>Option3 Name</TableHead>
                                         <TableHead>Option3 Value</TableHead>
                                         <TableHead>Price</TableHead>
+                                        <TableHead>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -313,7 +383,7 @@ export default function EditProduct({ product }: ProductEditProps) {
                                         ))
                                     ) : (
                                         <TableRow>
-                                            <TableCell colSpan={8} className="text-center">
+                                            <TableCell colSpan={9} className="text-center">
                                                 No variants
                                             </TableCell>
                                         </TableRow>
@@ -325,6 +395,58 @@ export default function EditProduct({ product }: ProductEditProps) {
                                     Add Variant
                                 </Button>
                             </div>
+                        </div>
+
+                        {/* Image Upload Section - Same as AddProduct */}
+                        <div className="md:col-span-2 mt-6">
+                            <label className="block text-xs font-medium mb-1">Add New Images</label>
+                            <p className={"text-white/70"}>Select multiple images then select the corresponding option/category from existing variants.</p>
+                            <Input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="block w-full border rounded px-2 py-1 text-sm"
+                            />
+                            {Object.entries(variantGroup()).map(([variant, files]) => (
+                                <div key={variant} className="mb-6">
+                                    <h4 className="font-semibold text-sm mb-2">{variant === "Unassigned" ? "Unassigned" : variant}</h4>
+                                    <div className="flex flex-wrap gap-3">
+                                        {files.map((file, idx) => {
+                                            const imageIdx = data.images.findIndex(f => f === file);
+                                            return (
+                                                <div key={imageIdx} className="flex items-center gap-2">
+                                                    <span className="text-xs">{file.name}</span>
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleRemoveImage(imageIdx)}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                    <select
+                                                        value={getVariantChosenValue(imageIdx)}
+                                                        onChange={e => {
+                                                            const updated = [...data.variantChosen];
+                                                            updated[imageIdx] = e.target.value;
+                                                            setData('variantChosen', updated);
+                                                        }}
+                                                        className="border rounded px-2 py-1 text-sm bg-white text-black"
+                                                        name="variantChosen"
+                                                    >
+                                                        {getVariantOptionMenu().map(({ label, value }) => (
+                                                            <option key={value} value={value}>
+                                                                {label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </CardContent>
                 </form>
