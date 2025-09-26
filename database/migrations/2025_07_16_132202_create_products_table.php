@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             // Option Columns
             $table->json('options')->nullable();
+            $table->string('primary_option')->nullable();
             // Variant info
             $table->string('sku')->nullable();
             $table->float('grams')->nullable();

@@ -6,11 +6,13 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use function Pest\Laravel\get;
+use function Pest\Laravel\options;
 
 class ShopController extends Controller
 {
@@ -50,9 +52,22 @@ class ShopController extends Controller
         $user = Auth::guard('web')->user();
         return Inertia::render('Shop/cart' , [ 'cart'  => Cart::where('user_id' , $user->id)]);
     }
-    public function showProducts(){
-        return Inertia::render('Shop/Products', ['products' => Product::with('variants')->get()]);
+    public function showProducts() {
+        $productVariants = ProductVariant::all();
+        $productoptions = [];
 
+        foreach ($productVariants as $product) {
+            $productoptions[] = $product->options;
+        }
+
+        if (empty($productoptions)) {
+            $productoptions[] = 'products not found';
+        }
+
+        return Inertia::render('Shop/Products', [
+            'products' => $productVariants,
+            'productoptions' => $productoptions
+        ]);
     }
 
 }

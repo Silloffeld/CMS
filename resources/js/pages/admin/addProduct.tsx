@@ -39,6 +39,7 @@ export default function AddProduct() {
                 price: "",
             }
         ],
+        primary_variant: "",
         images: [] as File[],
         variantChosen: [] as string[]
     });

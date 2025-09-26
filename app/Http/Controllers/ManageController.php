@@ -56,12 +56,8 @@ class ManageController extends Controller
             'variants' => 'array',
             'variants.*.id' => 'integer|exists:product_variants,id',
             'variants.*.sku' => 'nullable|string',
-            'variants.*.option1_name' => 'nullable|string',
-            'variants.*.option1_value' => 'nullable|string',
-            'variants.*.option2_name' => 'nullable|string',
-            'variants.*.option2_value' => 'nullable|string',
-            'variants.*.option3_name' => 'nullable|string',
-            'variants.*.option3_value' => 'nullable|string',
+            'variants.*.options' => 'nullable|json',
+            'primary_option' => 'nullable|string',
             'variants.*.price' => 'nullable|string',
             'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
@@ -92,12 +88,7 @@ class ManageController extends Controller
                 $variant = ProductVariant::findOrFail($variantData['id']);
                 $variant->update([
                     'sku' => $variantData['sku'] ?? null,
-                    'option1_name' => $variantData['option1_name'] ?? null,
-                    'option1_value' => $variantData['option1_value'] ?? null,
-                    'option2_name' => $variantData['option2_name'] ?? null,
-                    'option2_value' => $variantData['option2_value'] ?? null,
-                    'option3_name' => $variantData['option3_name'] ?? null,
-                    'option3_value' => $variantData['option3_value'] ?? null,
+                    'options' => $variantData['options'] ?? null,
                     'price' => $variantData['price'] ?? null,
                 ]);
             }
@@ -138,6 +129,7 @@ class ManageController extends Controller
             'variants' => 'array',
             'variants.*.variantName' => 'nullable|string',
             'variants.*.options' => 'array',
+            'primary_option' => 'nullable|string',
             'variants.*.price' => 'nullable|string',
             'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',

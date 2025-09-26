@@ -239,32 +239,33 @@ class AdminController extends Controller
                 $created++;
             }
         }
-        elseif($category =='inventaris'){
-            $requiredProduct = ['location'];
-            $missingHeaders = array_diff($requiredProduct, $header);
-            if (!empty($missingHeaders)) {
-                return back()->with('error', 'Missing required inventory ' . implode(', ', $missingHeaders));
-            }
-            foreach ($data as $row) {
-                if (count($row) !== count($header)) continue;
-                $rowData = array_combine($header, $row);
-                $inventory = \App\Models\Inventory::create([
-                    'handle'           => $rowData['handle'] ?? '',
-                    'title'            => $rowData['title'] ?? '',
-                    'option1_name'     => $rowData['option1 name'] ?? '',
-                    'option1_value'    => $rowData['option1 value'] ?? '',
-                    'option2_name'     => $rowData['option2 name'] ?? '',
-                    'option2_value'    => $rowData['option2 value'] ?? '',
-                    'option3_name'     => $rowData['option3 name'] ?? '',
-                    'option3_value'    => $rowData['option3 value'] ?? '',
-                    'sku'              => $rowData['sku'] ?? '',
-                    'hs_code'          => $rowData['hs code'] ?? '',
-                    'coo'              => $rowData['coo'] ?? '',
-                    'inventory'    => $rowData['location'] ?? '',
-                ]);
-                $created++;
-            }
-        }
+//        elseif($category =='inventaris'){
+//            $requiredProduct = ['location'];
+//            $missingHeaders = array_diff($requiredProduct, $header);
+//            if (!empty($missingHeaders)) {
+//                return back()->with('error', 'Missing required inventory ' . implode(', ', $missingHeaders));
+//            }
+//            //TODO:: fix inventory import if necissary
+//            foreach ($data as $row) {
+//                if (count($row) !== count($header)) continue;
+//                $rowData = array_combine($header, $row);
+//                $inventory = Inventory::create([
+//                    'handle'           => $rowData['handle'] ?? '',
+//                    'title'            => $rowData['title'] ?? '',
+//                    'option1_name'     => $rowData['option1 name'] ?? '',
+//                    'option1_value'    => $rowData['option1 value'] ?? '',
+//                    'option2_name'     => $rowData['option2 name'] ?? '',
+//                    'option2_value'    => $rowData['option2 value'] ?? '',
+//                    'option3_name'     => $rowData['option3 name'] ?? '',
+//                    'option3_value'    => $rowData['option3 value'] ?? '',
+//                    'sku'              => $rowData['sku'] ?? '',
+//                    'hs_code'          => $rowData['hs code'] ?? '',
+//                    'coo'              => $rowData['coo'] ?? '',
+//                    'inventory'    => $rowData['location'] ?? '',
+//                ]);
+//                $created++;
+//            }
+//        }
         if ($created > 0) {
             return back()->with('success', "Imported {$created} products!");
         } else {

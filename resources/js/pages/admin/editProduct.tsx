@@ -37,6 +37,7 @@ interface ProductData {
     seo_description?: string
     status?: string
     variants?: ProductVariant[]
+    primary_variant: "",
 }
 
 interface ProductEditProps {
@@ -61,16 +62,12 @@ export default function EditProduct({ product }: ProductEditProps) {
         seo_title: product.seo_title || "",
         seo_description: product.seo_description || "",
         status: product.status || "",
+        primary_variant: "",
         variants: product.variants
             ? product.variants.map(v => ({
                 id: v.id,
                 sku: v.sku || "",
-                option1_name: v.option1_name || "",
-                option1_value: v.option1_value || "",
-                option2_name: v.option2_name || "",
-                option2_value: v.option2_value || "",
-                option3_name: v.option3_name || "",
-                option3_value: v.option3_value || "",
+                options:[],
                 price: v.price || "",
             }))
             : [],

@@ -12,6 +12,7 @@ class Product extends Model
     protected $fillable = [
         'handle',
         'title',
+        'primary_option',
         'body_html',
         'vendor',
         'product_category',
