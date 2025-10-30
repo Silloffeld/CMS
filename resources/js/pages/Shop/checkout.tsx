@@ -1,3 +1,4 @@
+import ShopLayout from '@/layouts/shop-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -41,7 +42,7 @@ export default function Checkout({ cartItems, user }: CheckoutProps) {
     const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
     return (
-        <>
+        <ShopLayout>
             <Head title="Checkout" />
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-3xl font-bold mb-8">Checkout</h1>
@@ -135,6 +136,6 @@ export default function Checkout({ cartItems, user }: CheckoutProps) {
                     </div>
                 </div>
             </div>
-        </>
+        </ShopLayout>
     );
 }

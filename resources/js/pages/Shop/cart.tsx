@@ -1,4 +1,5 @@
-import { Link, router } from '@inertiajs/react';
+import ShopLayout from '@/layouts/shop-layout';
+import { Head, Link, router } from '@inertiajs/react';
 import React, { useState } from 'react';
 
 interface ProductVariant {
@@ -47,8 +48,10 @@ function Cart({ cart }: CartProps) {
     const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+        <ShopLayout>
+            <Head title="Shopping Cart" />
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
             {cart?.length > 0 ? (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
@@ -137,7 +140,8 @@ function Cart({ cart }: CartProps) {
                     </Link>
                 </div>
             )}
-        </div>
+            </div>
+        </ShopLayout>
     );
 }
 

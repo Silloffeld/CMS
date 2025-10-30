@@ -1,3 +1,4 @@
+import ShopLayout from '@/layouts/shop-layout';
 import { Head, Link } from '@inertiajs/react';
 
 interface OrderItem {
@@ -43,7 +44,7 @@ export default function Orders({ orders }: OrdersProps) {
     };
 
     return (
-        <>
+        <ShopLayout>
             <Head title="My Orders" />
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-3xl font-bold mb-8">My Orders</h1>
@@ -93,6 +94,6 @@ export default function Orders({ orders }: OrdersProps) {
                     </div>
                 )}
             </div>
-        </>
+        </ShopLayout>
     );
 }

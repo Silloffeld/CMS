@@ -1,4 +1,5 @@
-import { router } from '@inertiajs/react';
+import ShopLayout from '@/layouts/shop-layout';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface ProductVariant {
@@ -39,8 +40,10 @@ function Products({ products }: ProductProps) {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+        <ShopLayout>
+            <Head title="Products" />
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8">Our Products</h1>
             {products?.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
@@ -107,9 +110,10 @@ function Products({ products }: ProductProps) {
                     ))}
                 </div>
             ) : (
-                <p className="text-gray-600 text-center">No products available</p>
-            )}
-        </div>
+                    <p className="text-gray-600 text-center">No products available</p>
+                )}
+            </div>
+        </ShopLayout>
     );
 }
 
