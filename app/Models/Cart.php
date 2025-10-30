@@ -9,12 +9,22 @@ class Cart extends Model
     protected $casts = [
         'options' => 'array',
     ];
-    protected $table = 'carts';
+    protected $table = 'cart';
     protected $fillable = [
-        'user_id',
+        'customer_id',
         'product_id',
-        'product_name',
         'options',
-        'price',
+        'quantity',
     ];
+    public $timestamps = false;
+
+    public function product()
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
