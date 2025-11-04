@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 type AccountForm = {
-    name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     password: string;
     password_confirmation: string;
@@ -16,7 +17,8 @@ type AccountForm = {
 
 interface AccountProps {
     user: {
-        name: string;
+        first_name?: string;
+        last_name?: string;
         email: string;
     };
     status?: string;
@@ -28,7 +30,8 @@ interface AccountProps {
 
 export default function Account({ user, status, flash }: AccountProps) {
     const { data, setData, post, processing, errors, reset } = useForm<AccountForm>({
-        name: user.name,
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
         email: user.email,
         password: '',
         password_confirmation: '',
@@ -36,7 +39,7 @@ export default function Account({ user, status, flash }: AccountProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('account.update'), {
+        post(route('shop.account.update'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
@@ -59,15 +62,25 @@ export default function Account({ user, status, flash }: AccountProps) {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="name">Name</Label>
+                        <Label className="text-text" htmlFor="first_name">First Name</Label>
                         <Input
-                            id="name"
+                            id="first_name"
                             type="text"
-                            required
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
+                            value={data.first_name}
+                            onChange={(e) => setData('first_name', e.target.value)}
                         />
-                        <InputError message={errors.name} />
+                        <InputError message={errors.first_name} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label className="text-text" htmlFor="last_name">Last Name</Label>
+                        <Input
+                            id="last_name"
+                            type="text"
+                            value={data.last_name}
+                            onChange={(e) => setData('last_name', e.target.value)}
+                        />
+                        <InputError message={errors.last_name} />
                     </div>
 
                     <div className="grid gap-2">
