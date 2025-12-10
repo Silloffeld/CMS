@@ -25,7 +25,7 @@ interface LoginProps {
     };
 }
 
-export default function Login({ status, canResetPassword ,flash}: LoginProps) {
+export default function Login({ status, canResetPassword, flash }: LoginProps) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
@@ -46,7 +46,9 @@ export default function Login({ status, canResetPassword ,flash}: LoginProps) {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="email">Email address</Label>
+                        <Label className="text-text" htmlFor="email">
+                            Email address
+                        </Label>
                         <Input
                             id="email"
                             type="email"
@@ -63,7 +65,9 @@ export default function Login({ status, canResetPassword ,flash}: LoginProps) {
 
                     <div className="grid gap-2">
                         <div className="flex items-center">
-                            <Label className="text-text" htmlFor="password">Password</Label>
+                            <Label className="text-text" htmlFor="password">
+                                Password
+                            </Label>
                             {canResetPassword && (
                                 <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
                                     Forgot password?
@@ -91,18 +95,16 @@ export default function Login({ status, canResetPassword ,flash}: LoginProps) {
                             onClick={() => setData('remember', !data.remember)}
                             tabIndex={3}
                         />
-                        <Label className="text-text" htmlFor="remember">Remember me</Label>
+                        <Label className="text-text" htmlFor="remember">
+                            Remember me
+                        </Label>
                     </div>
 
                     <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
-                    {flash?.error && (
-                        <div className="mb-4 text-center text-sm font-medium text-red-600">
-                            {flash.error}
-                        </div>
-                    )}
+                    {flash?.error && <div className="mb-4 text-center text-sm font-medium text-red-600">{flash.error}</div>}
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">

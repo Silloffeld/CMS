@@ -1,11 +1,5 @@
-import React from 'react';
-
 function ProductsManage() {
-    return (
-        <div>
-
-        </div>
-    );
+    return <div></div>;
 }
 
 export default ProductsManage;

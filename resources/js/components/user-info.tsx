@@ -8,8 +8,8 @@ export function UserInfo({ user, showEmail = false }: { user?: User; showEmail?:
     if (!user) {
         // Show a fallback, or return null, or a skeleton/loading
         return (
-            <div className="flex items-center h-8">
-                <span className="text-muted-foreground text-sm">No user data</span>
+            <div className="flex h-8 items-center">
+                <span className="text-sm text-muted-foreground">No user data</span>
             </div>
         );
     }

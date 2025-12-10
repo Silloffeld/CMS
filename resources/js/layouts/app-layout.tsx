@@ -5,7 +5,7 @@ import { type ReactNode } from 'react';
 interface AppLayoutProps {
     children: ReactNode;
     breadcrumbs?: BreadcrumbItem[];
-    isSuper?: boolean // <-- add this
+    isSuper?: boolean; // <-- add this
 }
 
 export default function AppLayout({ children, breadcrumbs, isSuper }: AppLayoutProps) {

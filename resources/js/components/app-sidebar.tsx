@@ -7,7 +7,6 @@ import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
-
 type AppSidebarProps = {
     isSuper: number | boolean; // Accepts either type
 };
@@ -21,30 +20,33 @@ export function AppSidebar({ isSuper }: AppSidebarProps) {
         },
         // Only include if isSuper is true or 1
         ...(isSuper
-            ? [{
-                title: 'add admin users',
-                href: '/addAdmin',
-                icon: LayoutGrid,
-            }]
-            : []),  {
+            ? [
+                  {
+                      title: 'add admin users',
+                      href: '/addAdmin',
+                      icon: LayoutGrid,
+                  },
+              ]
+            : []),
+        {
             title: 'Manage',
             href: '/manage',
             icon: LayoutGrid,
         },
     ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+    const footerNavItems: NavItem[] = [
+        {
+            title: 'Repository',
+            href: 'https://github.com/laravel/react-starter-kit',
+            icon: Folder,
+        },
+        {
+            title: 'Documentation',
+            href: 'https://laravel.com/docs/starter-kits#react',
+            icon: BookOpen,
+        },
+    ];
     return (
         <Sidebar collapsible="icon" variant="floating">
             <SidebarHeader>
@@ -69,4 +71,4 @@ const footerNavItems: NavItem[] = [
             </SidebarFooter>
         </Sidebar>
     );
- }
+}

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,16 +10,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 const categories = ['producten', 'klanten', 'inventaris'];
 
-function Import({  csrfToken, flash }) {
+function Import({ csrfToken, flash }) {
     const [selectedCategory, setSelectedCategory] = useState('');
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <form
-                method="post"
-                encType="multipart/form-data"
-                action={route('admin.import')}
-                className="mx-4"
-            >
+            <form method="post" encType="multipart/form-data" action={route('admin.import')} className="mx-4">
                 <h2 className="mb-4 text-2xl font-bold text-gray-700">Import Shopify CSV</h2>
 
                 <input type="hidden" name="_token" value={csrfToken} />
@@ -46,7 +41,7 @@ function Import({  csrfToken, flash }) {
                         name="category"
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="block w-full rounded-md border border-gray-300  px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                        className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
                     >
                         <option value="">Select a category</option>
                         {categories.map((cat) => (
@@ -59,8 +54,7 @@ function Import({  csrfToken, flash }) {
 
                 <button
                     type="submit"
-                    className="w-full rounded-md bg-primary px-4 py-2 font-semibold text-orange-700
-                    shadow transition hover:bg-secondary my-4"
+                    className="my-4 w-full rounded-md bg-primary px-4 py-2 font-semibold text-orange-700 shadow transition hover:bg-secondary"
                 >
                     Import Shopify CSV
                 </button>

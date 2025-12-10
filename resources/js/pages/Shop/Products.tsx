@@ -1,5 +1,5 @@
 interface ProductVariant {
-    options : []
+    options: [];
     id: number;
     price?: number;
     compare_at_price?: number;

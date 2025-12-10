@@ -46,7 +46,7 @@ return [
             'model' => App\Models\User::class,
         ],
     ],
-// Add a guard for admins
+    // Add a guard for admins
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -57,7 +57,6 @@ return [
             'provider' => 'admins',
         ],
     ],
-
 
     /*
     |--------------------------------------------------------------------------

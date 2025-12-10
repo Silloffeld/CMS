@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CartItem {
     product_id: number;
     product_name: string;
