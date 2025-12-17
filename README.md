@@ -8,6 +8,6 @@ inertia
 react 
 
 project explanation :
-this is a laravel backend react + front end cms directly connect to the shop / store page ! 
+this is a laravel backend react + front end cms directly connected to the shop / store page ! 
 
 feel free to use this however u want
