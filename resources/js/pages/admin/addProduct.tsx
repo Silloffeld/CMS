@@ -1,18 +1,18 @@
-"use client"
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Link, useForm } from "@inertiajs/react"
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import {Trash2} from "lucide-react"
+import { Link, useForm } from '@inertiajs/react';
+import { Trash2 } from 'lucide-react';
 
 interface ProductVariant {
-    variantName?: string
-    options: VariantOption[]
-    price?: string
-    [key: string]: any
+    variantName?: string;
+    options: VariantOption[];
+    price?: string;
+    [key: string]: any;
 }
 interface VariantOption {
     name: string;
@@ -20,106 +20,95 @@ interface VariantOption {
 
 export default function AddProduct() {
     const { data, setData, post, processing, errors } = useForm({
-        handle: "",
-        title: "",
-        body_html: "",
-        vendor: "",
-        product_category: "",
-        type: "",
-        tags: "",
-        published: "",
-        gift_card: "",
-        seo_title: "",
-        seo_description: "",
-        status: "",
+        handle: '',
+        title: '',
+        body_html: '',
+        vendor: '',
+        product_category: '',
+        type: '',
+        tags: '',
+        published: '',
+        gift_card: '',
+        seo_title: '',
+        seo_description: '',
+        status: '',
         variants: [
             {
-                variantName: "",
+                variantName: '',
                 options: [],
-                price: "",
-            }
+                price: '',
+            },
         ],
-        primary_variant: "",
+        primary_variant: '',
         images: [] as File[],
-        variantChosen: [] as string[]
+        variantChosen: [] as string[],
     });
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        setData(e.target.name as keyof typeof data, e.target.value)
+        setData(e.target.name as keyof typeof data, e.target.value);
     }
-    function handleOptionChange(
-        variantIdx: number,
-        optionIdx: number,
-        field: keyof VariantOption,
-        value: string
-    ) {
-        setData("variants", [
+    function handleOptionChange(variantIdx: number, optionIdx: number, field: keyof VariantOption, value: string) {
+        setData('variants', [
             ...(data.variants as ProductVariant[]).map((variant, vIdx) =>
                 vIdx === variantIdx
                     ? {
-                        ...variant,
-                        options: variant.options.map((option, oIdx) =>
-                            oIdx === optionIdx
-                                ? { ...option, [field]: value }
-                                : option
-                        )
-                    }
-                    : variant
+                          ...variant,
+                          options: variant.options.map((option, oIdx) => (oIdx === optionIdx ? { ...option, [field]: value } : option)),
+                      }
+                    : variant,
             ),
         ]);
     }
 
-    function handleVariantChange(
-        idx: number,
-        field: keyof ProductVariant,
-        value: string
-    ) {
-        setData("variants", [
-            ...(data.variants as ProductVariant[]).map((variant, vIdx) =>
-                vIdx === idx
-                    ? { ...variant, [field]: value }
-                    : variant
-            ),
+    function handleVariantChange(idx: number, field: keyof ProductVariant, value: string) {
+        setData('variants', [
+            ...(data.variants as ProductVariant[]).map((variant, vIdx) => (vIdx === idx ? { ...variant, [field]: value } : variant)),
         ]);
     }
 
     function addVariant() {
-        setData("variants", [
+        setData('variants', [
             ...(data.variants as ProductVariant[]),
             {
-                variantName: "",
+                variantName: '',
                 options: [],
-                price: "",
+                price: '',
             },
         ]);
     }
 
     function removeVariant(idx: number) {
-        setData("variants", (data.variants as ProductVariant[]).filter((_, i) => i !== idx));
+        setData(
+            'variants',
+            (data.variants as ProductVariant[]).filter((_, i) => i !== idx),
+        );
     }
 
     function handleSubmit(e: React.FormEvent) {
-        e.preventDefault()
-        post(route("admin.addProduct"))
+        e.preventDefault();
+        post(route('admin.addProduct'));
     }
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files) {
-            setData("images", [
-                ...(data.images as File[]),
-                ...Array.from(e.target.files)
-            ]);
+            setData('images', [...(data.images as File[]), ...Array.from(e.target.files)]);
         }
     }
     function handleRemoveImage(idx: number) {
-        setData("images", (data.images as File[]).filter((_, i) => i !== idx));
-        setData("variantChosen", (data.variantChosen as string[]).filter((_, i) => i !== idx));
+        setData(
+            'images',
+            (data.images as File[]).filter((_, i) => i !== idx),
+        );
+        setData(
+            'variantChosen',
+            (data.variantChosen as string[]).filter((_, i) => i !== idx),
+        );
     }
 
     function getVariantOptionMenu() {
-        const menu: { label: string, value: string }[] = [];
-        (data.variants as ProductVariant[]).forEach((variant, ) => {
-            variant.options.forEach((option, ) => {
+        const menu: { label: string; value: string }[] = [];
+        (data.variants as ProductVariant[]).forEach((variant) => {
+            variant.options.forEach((option) => {
                 const label = `${variant.variantName || 'Variant'}: ${option.name}`;
                 const value = `${variant.variantName}:${option.name}`;
                 menu.push({ label, value });
@@ -129,15 +118,15 @@ export default function AddProduct() {
     }
 
     function getVariantChosenValue(idx: number) {
-        const chosen = data.variantChosen[idx] || "";
+        const chosen = data.variantChosen[idx] || '';
         const menu = getVariantOptionMenu();
-        if (chosen && menu.some(opt => opt.value === chosen)) return chosen;
-        return menu[0]?.value || "";
+        if (chosen && menu.some((opt) => opt.value === chosen)) return chosen;
+        return menu[0]?.value || '';
     }
     function variantGroup() {
         const groups: Record<string, File[]> = {};
         (data.images as File[]).forEach((file, idx) => {
-            const variant = data.variantChosen[idx] || "Unassigned";
+            const variant = data.variantChosen[idx] || 'Unassigned';
             if (!groups[variant]) groups[variant] = [];
             groups[variant].push(file);
         });
@@ -145,81 +134,79 @@ export default function AddProduct() {
     }
     return (
         <AppLayout>
-            <Card className="w-full max-w-4xl mx-auto">
+            <Card className="mx-auto w-full max-w-4xl">
                 <CardHeader>
                     <CardTitle>Add Product</CardTitle>
-                    <CardDescription>
-                        Fill in the product information and variants, then click "Create Product".
-                    </CardDescription>
+                    <CardDescription>Fill in the product information and variants, then click "Create Product".</CardDescription>
                     <div className="mt-4">
-                        <Link href={route("admin.manage")} className="text-sm underline text-muted-foreground">
+                        <Link href={route('admin.manage')} className="text-sm text-muted-foreground underline">
                             ← Back to Product Management
                         </Link>
                     </div>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                            <label className="block text-xs font-medium mb-1">Handle</label>
+                            <label className="mb-1 block text-xs font-medium">Handle</label>
                             <Input name="handle" value={data.handle} onChange={handleChange} placeholder="product-handle" />
-                            {errors.handle && <div className="text-destructive text-xs">{errors.handle}</div>}
+                            {errors.handle && <div className="text-xs text-destructive">{errors.handle}</div>}
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Title</label>
+                            <label className="mb-1 block text-xs font-medium">Title</label>
                             <Input name="title" value={data.title} onChange={handleChange} placeholder="Product title" />
-                            {errors.title && <div className="text-destructive text-xs">{errors.title}</div>}
+                            {errors.title && <div className="text-xs text-destructive">{errors.title}</div>}
                         </div>
                         <div className="md:col-span-2">
-                            <label className="block text-xs font-medium mb-1">Body HTML</label>
+                            <label className="mb-1 block text-xs font-medium">Body HTML</label>
                             <textarea
                                 name="body_html"
                                 value={data.body_html}
                                 onChange={handleChange}
-                                className="w-full border rounded px-2 py-1 text-sm min-h-[60px]"
+                                className="min-h-[60px] w-full rounded border px-2 py-1 text-sm"
                                 placeholder="Product description"
                             />
-                            {errors.body_html && <div className="text-destructive text-xs">{errors.body_html}</div>}
+                            {errors.body_html && <div className="text-xs text-destructive">{errors.body_html}</div>}
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Vendor(merknaam)</label>
+                            <label className="mb-1 block text-xs font-medium">Vendor(merknaam)</label>
                             <Input name="vendor" value={data.vendor} onChange={handleChange} placeholder="Vendor" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Product Category</label>
+                            <label className="mb-1 block text-xs font-medium">Product Category</label>
                             <Input name="product_category" value={data.product_category} onChange={handleChange} placeholder="Category" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Type</label>
+                            <label className="mb-1 block text-xs font-medium">Type</label>
                             <Input name="type" value={data.type} onChange={handleChange} placeholder="Type" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Tags</label>
+                            <label className="mb-1 block text-xs font-medium">Tags</label>
                             <Input name="tags" value={data.tags} onChange={handleChange} placeholder="Comma separated tags" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Gift Card</label>
+                            <label className="mb-1 block text-xs font-medium">Gift Card</label>
                             <Input name="gift_card" value={data.gift_card} onChange={handleChange} placeholder="Yes/No" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">SEO Title</label>
+                            <label className="mb-1 block text-xs font-medium">SEO Title</label>
                             <Input name="seo_title" value={data.seo_title} onChange={handleChange} placeholder="SEO Title" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">SEO Description</label>
+                            <label className="mb-1 block text-xs font-medium">SEO Description</label>
                             <Input name="seo_description" value={data.seo_description} onChange={handleChange} placeholder="SEO Description" />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium mb-1">Status</label>
+                            <label className="mb-1 block text-xs font-medium">Status</label>
                             <Input name="status" value={data.status} onChange={handleChange} placeholder="active/draft" />
                         </div>
                         <div className="mt-5 flex justify-center">
-                            <Button type={'submit'} disabled={processing} className={"p-5 font-bold text-lg text-black"}>
+                            <Button type={'submit'} disabled={processing} className={'p-5 text-lg font-bold text-black'}>
                                 Create Product
                             </Button>
                         </div>
                     </CardContent>
                     <CardHeader>
-                        <CardTitle className="text-base mt-6">Variants</CardTitle>
+                        <CardTitle className="mt-6 text-base">Variants</CardTitle>
                         <CardDescription>Add one or more product variants. for example 1 variant = size and 1 variant = color</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -239,47 +226,51 @@ export default function AddProduct() {
                                             <TableRow key={idx}>
                                                 <TableCell>
                                                     <Input
-                                                        value={variant.variantName || ""}
-                                                        onChange={e => handleVariantChange(idx, "variantName", e.target.value)}
+                                                        value={variant.variantName || ''}
+                                                        onChange={(e) => handleVariantChange(idx, 'variantName', e.target.value)}
                                                         className="min-w-[100px]"
                                                         placeholder="variant name"
                                                     />
                                                 </TableCell>
                                                 <TableCell>
                                                     {variant.options.map((option, optIdx) => (
-                                                        <div key={optIdx} className="flex flex-wrap gap-2 mb-2">
+                                                        <div key={optIdx} className="mb-2 flex flex-wrap gap-2">
                                                             <Input
                                                                 value={option.name}
-                                                                onChange={e => handleOptionChange(idx, optIdx, "name", e.target.value)}
+                                                                onChange={(e) => handleOptionChange(idx, optIdx, 'name', e.target.value)}
                                                                 placeholder="Option Name"
-                                                                className={"flex-1 "}
+                                                                className={'flex-1'}
                                                             />
-                                                            <button type={'button'}
-                                                                    onClick={() => {
-                                                                        const updatedVariants = [...data.variants];
-                                                                        updatedVariants[idx].options = updatedVariants[idx].options.filter((_, i) => i !== optIdx);
-                                                                        setData("variants", updatedVariants);
-                                                                    }}
-                                                                    disabled={variant.options.length === 1}
+                                                            <button
+                                                                type={'button'}
+                                                                onClick={() => {
+                                                                    const updatedVariants = [...data.variants];
+                                                                    updatedVariants[idx].options = updatedVariants[idx].options.filter(
+                                                                        (_, i) => i !== optIdx,
+                                                                    );
+                                                                    setData('variants', updatedVariants);
+                                                                }}
+                                                                disabled={variant.options.length === 1}
                                                             >
-                                                                <Trash2 className={'w-5 text-red-700'}/>
+                                                                <Trash2 className={'w-5 text-red-700'} />
                                                             </button>
                                                         </div>
                                                     ))}
-                                                    <button type={'button'}
-                                                            onClick={() => {
-                                                                const updatedVariants = [...data.variants];
-                                                                updatedVariants[idx].options.push({ name: ""});
-                                                                setData("variants", updatedVariants);
-                                                            }}
+                                                    <button
+                                                        type={'button'}
+                                                        onClick={() => {
+                                                            const updatedVariants = [...data.variants];
+                                                            updatedVariants[idx].options.push({ name: '' });
+                                                            setData('variants', updatedVariants);
+                                                        }}
                                                     >
                                                         Add Option
                                                     </button>
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
-                                                        value={variant.price || ""}
-                                                        onChange={e => handleVariantChange(idx, "price", e.target.value)}
+                                                        value={variant.price || ''}
+                                                        onChange={(e) => handleVariantChange(idx, 'price', e.target.value)}
                                                         className="min-w-[70px]"
                                                         placeholder="Price"
                                                     />
@@ -305,47 +296,45 @@ export default function AddProduct() {
                                     )}
                                 </TableBody>
                             </Table>
-                            <div className="flex justify-center mt-4">
+                            <div className="mt-4 flex justify-center">
                                 <Button type="button" onClick={addVariant} variant="secondary">
                                     Add Variant
                                 </Button>
                             </div>
                         </div>
-                        <div className="md:col-span-2 mt-2">
-                            <label className="block text-xs font-medium mb-1">Images</label>
-                            <p className={"text-white/70"}>Select multiple images then select the corresponding option/category presuming you have added at least one category/variant.</p>
+                        <div className="mt-2 md:col-span-2">
+                            <label className="mb-1 block text-xs font-medium">Images</label>
+                            <p className={'text-white/70'}>
+                                Select multiple images then select the corresponding option/category presuming you have added at least one
+                                category/variant.
+                            </p>
                             <Input
                                 type="file"
                                 multiple
                                 accept="image/*"
                                 onChange={handleFileChange}
-                                className="block w-full border rounded px-2 py-1 text-sm"
+                                className="block w-full rounded border px-2 py-1 text-sm"
                             />
                             {Object.entries(variantGroup()).map(([variant, files]) => (
                                 <div key={variant} className="mb-6">
-                                    <h4 className="font-semibold text-sm mb-2">{variant === "Unassigned" ? "Unassigned" : variant}</h4>
+                                    <h4 className="mb-2 text-sm font-semibold">{variant === 'Unassigned' ? 'Unassigned' : variant}</h4>
                                     <div className="flex flex-wrap gap-3">
                                         {files.map((file, idx) => {
-                                            const imageIdx = data.images.findIndex(f => f === file);
+                                            const imageIdx = data.images.findIndex((f) => f === file);
                                             return (
                                                 <div key={imageIdx} className="flex items-center gap-2">
                                                     <span className="text-xs">{file.name}</span>
-                                                    <Button
-                                                        type="button"
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() => handleRemoveImage(imageIdx)}
-                                                    >
+                                                    <Button type="button" variant="destructive" size="sm" onClick={() => handleRemoveImage(imageIdx)}>
                                                         Remove
                                                     </Button>
                                                     <select
                                                         value={getVariantChosenValue(imageIdx)}
-                                                        onChange={e => {
+                                                        onChange={(e) => {
                                                             const updated = [...data.variantChosen];
                                                             updated[imageIdx] = e.target.value;
                                                             setData('variantChosen', updated);
                                                         }}
-                                                        className="border rounded px-2 py-1 text-sm bg-white text-black"
+                                                        className="rounded border bg-white px-2 py-1 text-sm text-black"
                                                         name="variantChosen"
                                                     >
                                                         {getVariantOptionMenu().map(({ label, value }) => (
@@ -365,5 +354,5 @@ export default function AddProduct() {
                 </form>
             </Card>
         </AppLayout>
-    )
+    );
 }

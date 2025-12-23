@@ -45,45 +45,31 @@ export default function Account({ user, status, flash }: AccountProps) {
         <AuthLayout title="Account Settings" description="View and update your account information">
             <Head title="Account" />
 
-            {flash?.error && (
-                <div className="mb-4 text-center text-sm font-medium text-red-600">
-                    {flash.error}
-                </div>
-            )}
-            {flash?.success && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {flash.success}
-                </div>
-            )}
+            {flash?.error && <div className="mb-4 text-center text-sm font-medium text-red-600">{flash.error}</div>}
+            {flash?.success && <div className="mb-4 text-center text-sm font-medium text-green-600">{flash.success}</div>}
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="name">Name</Label>
-                        <Input
-                            id="name"
-                            type="text"
-                            required
-                            value={data.name}
-                            onChange={(e) => setData('name', e.target.value)}
-                        />
+                        <Label className="text-text" htmlFor="name">
+                            Name
+                        </Label>
+                        <Input id="name" type="text" required value={data.name} onChange={(e) => setData('name', e.target.value)} />
                         <InputError message={errors.name} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            required
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                        />
+                        <Label className="text-text" htmlFor="email">
+                            Email address
+                        </Label>
+                        <Input id="email" type="email" required value={data.email} onChange={(e) => setData('email', e.target.value)} />
                         <InputError message={errors.email} />
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="password">New Password</Label>
+                        <Label className="text-text" htmlFor="password">
+                            New Password
+                        </Label>
                         <Input
                             id="password"
                             type="password"
@@ -96,7 +82,9 @@ export default function Account({ user, status, flash }: AccountProps) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="password_confirmation">Confirm New Password</Label>
+                        <Label className="text-text" htmlFor="password_confirmation">
+                            Confirm New Password
+                        </Label>
                         <Input
                             id="password_confirmation"
                             type="password"
@@ -112,7 +100,6 @@ export default function Account({ user, status, flash }: AccountProps) {
                     </Button>
                 </div>
             </form>
-
         </AuthLayout>
     );
 }

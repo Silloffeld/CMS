@@ -7,27 +7,30 @@ use App\Models\Media;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ManageController extends Controller
 {
-    public function manage(){
-        return Inertia::render('admin/manage', [ 'is_super' => Auth::guard('admin')->user()->is_super,
+    public function manage()
+    {
+        return Inertia::render('admin/manage', ['is_super' => Auth::guard('admin')->user()->is_super,
             'product' => Product::count(),
             'customer' => Customer::count(),
             'productData' => Product::with('variants')->get(),
             'inventoryData' => ProductVariant::with('product')->get()]);
     }
+
     public function deleteManage(Request $request)
     {
         $id = $request->input('id');
         $title = $request->input('title');
         Product::findOrFail($id)->delete();
-        return back()->with('success', $title . ' deleted!');
+
+        return back()->with('success', $title.' deleted!');
     }
+
     public function editProduct($id)
     {
         $product = Product::with('variants')->findOrFail($id);
@@ -109,9 +112,11 @@ class ManageController extends Controller
         return redirect()->route('admin.manage')->with('success', 'Product updated successfully!');
     }
 
-    public function addProduct(Request $request){
-            return inertia::render('admin/addProduct', []);
+    public function addProduct(Request $request)
+    {
+        return inertia::render('admin/addProduct', []);
     }
+
     public function storeProduct(Request $request)
     {
         $validated = $request->validate([
@@ -141,11 +146,11 @@ class ManageController extends Controller
         foreach ($validated['variants'] as $variant) {
             $optionValues = [];
             foreach ($variant['options'] as $option) {
-                if (!empty($option['name'])) {
+                if (! empty($option['name'])) {
                     $optionValues[] = $option['name'];
                 }
             }
-            if (!empty($optionValues)) {
+            if (! empty($optionValues)) {
                 $optionArrays[] = $optionValues;
             }
         }
@@ -161,7 +166,7 @@ class ManageController extends Controller
             $result = $tmp;
         }
 
-        $optionNames = array_map(function($variant) {
+        $optionNames = array_map(function ($variant) {
             return $variant['variantName'];
         }, $validated['variants']);
 
@@ -192,15 +197,6 @@ class ManageController extends Controller
             ]);
         }
 
-
-
         return redirect()->route('admin.manage');
-}
-
-
-
-
-
-
-
+    }
 }

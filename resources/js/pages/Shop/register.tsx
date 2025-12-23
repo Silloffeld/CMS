@@ -38,7 +38,9 @@ export default function Register() {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="name">Name</Label>
+                        <Label className="text-text" htmlFor="name">
+                            Name
+                        </Label>
                         <Input
                             id="name"
                             type="text"
@@ -54,7 +56,9 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="email">Email address</Label>
+                        <Label className="text-text" htmlFor="email">
+                            Email address
+                        </Label>
                         <Input
                             id="email"
                             type="email"
@@ -69,7 +73,9 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="password">Password</Label>
+                        <Label className="text-text" htmlFor="password">
+                            Password
+                        </Label>
                         <Input
                             id="password"
                             type="password"
@@ -84,7 +90,9 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label className="text-text" htmlFor="password_confirmation">Confirm Password</Label>
+                        <Label className="text-text" htmlFor="password_confirmation">
+                            Confirm Password
+                        </Label>
                         <Input
                             id="password_confirmation"
                             type="password"

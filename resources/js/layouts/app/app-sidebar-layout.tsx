@@ -5,7 +5,11 @@ import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
 
-export default function AppSidebarLayout({ children, breadcrumbs = [], isSuper }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[]; isSuper?: boolean | number }>) {
+export default function AppSidebarLayout({
+    children,
+    breadcrumbs = [],
+    isSuper,
+}: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[]; isSuper?: boolean | number }>) {
     return (
         <AppShell variant="sidebar">
             <AppSidebar isSuper={isSuper} />
