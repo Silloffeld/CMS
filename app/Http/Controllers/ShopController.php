@@ -3,56 +3,88 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use function Pest\Laravel\get;
-use function Pest\Laravel\options;
 
 class ShopController extends Controller
 {
-    public function login(){
-        return Inertia::render('Shop/login');
+    public function login(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Shop login page',
+        ]);
     }
-    public function register(){
-        return Inertia::render('Shop/register');
+
+    public function register(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Shop registration page',
+        ]);
     }
-    public function account(){
+
+    public function account(): JsonResponse
+    {
        $user = Auth::guard('web')->user();
-        return Inertia::render('Shop/account' , [ 'user' => $user ]);
+        return response()->json([
+            'user' => $user,
+        ]);
     }
-    public function authenticate(LoginRequest $request): RedirectResponse
+
+    public function authenticate(LoginRequest $request): JsonResponse
     {
         if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('shop.account', absolute: false));
+            return response()->json([
+                'message' => 'Authenticated successfully',
+                'redirect' => route('shop.account', absolute: false),
+            ]);
         }
-        else return back()->with('error', 'Invalid email or password.');
+        
+        return response()->json([
+            'error' => 'Invalid email or password.',
+        ], 401);
     }
-    public function storeAccount(request $request){
+
+    public function storeAccount(Request $request): JsonResponse
+    {
         $creds = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:customers',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string|min:6',
         ]);
+
         if(!$creds['password'] === $creds['password_confirmation']){
-            return back()->with('error', 'Password does not match.');
-        }else {
-            Customer::create(['email' => $creds['email'], 'password' => bcrypt($creds['password'])]);
-            return Inertia::render('Shop/login');}
+            return response()->json([
+                'error' => 'Password does not match.',
+            ], 422);
+        }
+
+        Customer::create([
+            'email' => $creds['email'], 
+            'password' => bcrypt($creds['password'])
+        ]);
+
+        return response()->json([
+            'message' => 'Account created successfully',
+            'redirect' => route('shop.login'),
+        ]);
     }
 
-    public function cart(){
+    public function cart(): JsonResponse
+    {
         $user = Auth::guard('web')->user();
-        return Inertia::render('Shop/cart' , [ 'cart'  => Cart::where('user_id' , $user->id)]);
+        return response()->json([
+            'cart' => Cart::where('user_id', $user->id)->get(),
+        ]);
     }
-    public function showProducts() {
+
+    public function showProducts(): JsonResponse
+    {
         $productVariants = ProductVariant::all();
         $productoptions = [];
 
@@ -64,10 +96,9 @@ class ShopController extends Controller
             $productoptions[] = 'products not found';
         }
 
-        return Inertia::render('Shop/Products', [
+        return response()->json([
             'products' => $productVariants,
-            'productoptions' => $productoptions
+            'productoptions' => $productoptions,
         ]);
     }
-
 }

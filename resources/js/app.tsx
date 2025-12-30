@@ -1,24 +1,27 @@
 import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/react';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { initializeTheme } from './hooks/use-appearance';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+// Import your pages - you'll need to update these imports based on your pages
+// This is a minimal example showing how to structure it
+const App = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<div>Welcome to the Shop</div>} />
+                <Route path="/login" element={<div>Login Page</div>} />
+                <Route path="/register" element={<div>Register Page</div>} />
+                <Route path="/admin" element={<div>Admin Dashboard</div>} />
+                {/* Add more routes as needed */}
+            </Routes>
+        </BrowserRouter>
+    );
+};
 
-createInertiaApp({
-    title: (title) => title ? `${title} - ${appName}` : appName,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
-    setup({ el, App, props }) {
-        const root = createRoot(el);
-
-        root.render(<App {...props} />);
-    },
-    progress: {
-        color: '#4B5563',
-    },
-});
+const root = createRoot(document.getElementById('app')!);
+root.render(<App />);
 
 // This will set light / dark mode on load...
 initializeTheme();
