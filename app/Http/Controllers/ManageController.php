@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,7 +31,7 @@ class ManageController extends Controller
         Product::findOrFail($id)->delete();
 
         return response()->json([
-            'message' => $title . ' deleted!',
+            'message' => $title.' deleted!',
         ]);
     }
 
@@ -156,11 +155,11 @@ class ManageController extends Controller
         foreach ($validated['variants'] as $variant) {
             $optionValues = [];
             foreach ($variant['options'] as $option) {
-                if (!empty($option['name'])) {
+                if (! empty($option['name'])) {
                     $optionValues[] = $option['name'];
                 }
             }
-            if (!empty($optionValues)) {
+            if (! empty($optionValues)) {
                 $optionArrays[] = $optionValues;
             }
         }
@@ -176,7 +175,7 @@ class ManageController extends Controller
             $result = $tmp;
         }
 
-        $optionNames = array_map(function($variant) {
+        $optionNames = array_map(function ($variant) {
             return $variant['variantName'];
         }, $validated['variants']);
 
@@ -207,17 +206,9 @@ class ManageController extends Controller
             ]);
         }
 
-
         return response()->json([
             'message' => 'Product created successfully',
             'product' => $product,
         ]);
-}
-
-
-
-
-
-
-
+    }
 }
