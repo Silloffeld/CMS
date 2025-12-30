@@ -44,7 +44,7 @@ class ManageController extends Controller
         ]);
     }
 
-    public function updateProduct(Request $request, $product): JsonResponse
+    public function updateProduct(Request $request, $productId): JsonResponse
     {
         // 1. Validate the main product fields and variants array
         $validated = $request->validate([
@@ -73,7 +73,7 @@ class ManageController extends Controller
         ]);
 
         // 2. Update the product
-        $product = Product::findOrFail($product);
+        $product = Product::findOrFail($productId);
         $product->update([
             'handle' => $validated['handle'],
             'title' => $validated['title'],

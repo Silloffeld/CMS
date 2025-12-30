@@ -60,7 +60,7 @@ class ShopController extends Controller
             'password_confirmation' => 'required|string|min:6',
         ]);
 
-        if (! $creds['password'] === $creds['password_confirmation']) {
+        if ($creds['password'] !== $creds['password_confirmation']) {
             return response()->json([
                 'error' => 'Password does not match.',
             ], 422);

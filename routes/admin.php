@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('admin/login', [AdminController::class, 'index'])->name('admin.login');
 Route::post('admin/login', [AdminController::class, 'login'])->name('admin.login');
 
-Route::middleware(['isAdmin'/* 'verified' */])->group(function () {
+Route::middleware(['isAdmin'])->group(function () {
     Route::get('admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('addAdmin', [AdminController::class, 'addAdmin'])->name('admin.add');
 
@@ -18,7 +18,7 @@ Route::middleware(['isAdmin'/* 'verified' */])->group(function () {
     Route::post('import', [AdminController::class, 'StoreImport'])->name('admin.import');
 
     Route::get('manage', [ManageController::class, 'manage'])->name('admin.manage');
-    Route::delete('manage ', [ManageController::class, 'deleteManage'])->name('admin.delete');
+    Route::delete('manage', [ManageController::class, 'deleteManage'])->name('admin.delete');
 
     Route::get('editProduct/{product}', [ManageController::class, 'editProduct'])->name('admin.editProduct');
     Route::post('editProduct/{product}', [ManageController::class, 'updateProduct'])->name('admin.editProduct');
