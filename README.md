@@ -21,6 +21,24 @@ The backend serves as a headless CMS, exposing JSON API endpoints for:
 
 The frontend is a standalone React application that consumes these APIs.
 
+## Current Status
+
+✅ **Backend**: Fully converted to headless API - all controllers return JSON
+✅ **Dependencies**: Inertia packages removed from composer.json and package.json
+✅ **Middleware**: Inertia middleware removed
+✅ **Configuration**: Inertia config removed
+⚠️ **Frontend**: Page components still reference Inertia and need to be updated to use fetch/axios for API calls
+
+### Next Steps for Complete Migration
+
+The page components in `resources/js/pages/` currently still import Inertia components (`@inertiajs/react`). To complete the migration:
+
+1. Replace Inertia's `useForm` hook with standard React state or a form library
+2. Replace Inertia's `Link` component with React Router's `Link`
+3. Replace Inertia's `Head` component with a helmet library or custom solution
+4. Update all pages to fetch data from API endpoints using fetch/axios
+5. Implement proper routing with React Router
+
 ## Getting Started
 
 ### Backend Setup

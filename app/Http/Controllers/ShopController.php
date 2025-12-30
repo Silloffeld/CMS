@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductVariant;
