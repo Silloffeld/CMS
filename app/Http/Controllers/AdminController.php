@@ -1,49 +1,52 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Customer;
 use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
-
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
-        return Inertia::render('admin/auth/login', [
+        return response()->json([
+            'message' => 'Admin login page',
         ]);
     }
-    public function addAdmin()
+
+    public function addAdmin(): JsonResponse
     {
         // Only the head admin can access this page
-        if (!Auth::guard('admin')->user()->is_super) {
-            abort(403, 'Only the head admin can manage other admins.');
+        if (! Auth::guard('admin')->user()->is_super) {
+            return response()->json([
+                'error' => 'Only the head admin can manage other admins.',
+            ], 403);
         }
 
         $admins = User::where('is_admin', true)->get();
-        return Inertia::render('admin/addAdmin', [
+
+        return response()->json([
             'admins' => $admins,
-            'is_super' => Auth::guard('admin')->user()->is_super
+            'is_super' => Auth::guard('admin')->user()->is_super,
         ]);
     }
 
-    public function storeAdmin(Request $request)
+    public function storeAdmin(Request $request): JsonResponse
     {
         $maxAdmins = 5;
 
         $adminCount = \App\Models\User::where('is_admin', true)->count();
         if ($adminCount >= $maxAdmins) {
-            // Optionally use a redirect or validation error
-            return back()->withErrors(['admin_limit' => 'Maximum admin count reached.']);
+            return response()->json([
+                'error' => 'Maximum admin count reached.',
+            ], 422);
         }
 
         // Validate and create as usual
@@ -59,35 +62,49 @@ class AdminController extends Controller
             'password' => bcrypt($request->password),
             'is_admin' => true,
         ]);
-        return redirect()->route('admin.addAdmin')->with('success', 'Admin added!');
-    }
-    public function deleteAdmin($id)
-{
-    $admin = User::findOrFail($id);
-    $admin->delete();
 
-    // Return updated list of admins
-    $admins = User::where('is_admin', true)->get();
-    return Inertia::render('admin/addAdmin', [
-        'admins' => $admins
-    ]);
-}
-    public function dashboard()
+        return response()->json([
+            'message' => 'Admin added!',
+            'admin' => $admin,
+        ]);
+    }
+
+    public function deleteAdmin($id): JsonResponse
     {
-        return Inertia::render('admin/dashboard',[ 'user ' => Auth::user()]);
+        $admin = User::findOrFail($id);
+        $admin->delete();
+
+        // Return updated list of admins
+        $admins = User::where('is_admin', true)->get();
+
+        return response()->json([
+            'message' => 'Admin deleted',
+            'admins' => $admins,
+        ]);
     }
 
-    public function login(LoginRequest $request)
+    public function dashboard(): JsonResponse
+    {
+        return response()->json([
+            'user' => Auth::user(),
+        ]);
+    }
+
+    public function login(LoginRequest $request): JsonResponse
     {
         if (Auth::guard('admin')->attempt($request->only('email', 'password'))) {
-            return redirect()->intended(route('admin.dashboard'));
-
+            return response()->json([
+                'message' => 'Authenticated successfully',
+                'redirect' => route('admin.dashboard'),
+            ]);
         }
-     else return back()->withErrors([]);
+
+        return response()->json([
+            'error' => 'Invalid credentials',
+        ], 401);
     }
 
-
-    public function storeImport(Request $request)
+    public function storeImport(Request $request): JsonResponse
     {
         $request->validate([
             'shopify_csv' => 'required|file|mimes:csv,txt',
@@ -97,23 +114,32 @@ class AdminController extends Controller
         $data = array_map('str_getcsv', file($path));
 
         // Defensive: skip empty lines
-        $data = array_filter($data, fn($row) => count($row) && array_filter($row));
+        $data = array_filter($data, fn ($row) => count($row) && array_filter($row));
 
         if (count($data) < 2) {
-            return back()->with('error', 'CSV file seems empty or invalid.');
+            return response()->json([
+                'error' => 'CSV file seems empty or invalid.',
+            ], 422);
         }
 
         // Normalize headers to lowercase for consistent access
-        $header = array_map(fn($h) => strtolower(trim($h)), $data[0]);
+        $header = array_map(fn ($h) => strtolower(trim($h)), $data[0]);
         unset($data[0]);
         function normalizeBoolean($value)
         {
             if (is_string($value)) {
                 $value = strtolower(trim($value));
-                if (in_array($value, ['true', '1', 'yes'])) return 1;
-                if (in_array($value, ['false', '0', 'no'])) return 0;
+                if (in_array($value, ['true', '1', 'yes'])) {
+                    return 1;
+                }
+                if (in_array($value, ['false', '0', 'no'])) {
+                    return 0;
+                }
             }
-            if (is_numeric($value)) return ((int)$value) ? 1 : 0;
+            if (is_numeric($value)) {
+                return ((int) $value) ? 1 : 0;
+            }
+
             return 0; // default to 0 if empty or unknown
         }
 
@@ -123,12 +149,16 @@ class AdminController extends Controller
             $requiredProduct = ['handle', 'title', 'body (html)'];
             $missingHeaders = array_diff($requiredProduct, $header);
 
-            if (!empty($missingHeaders)) {
-                return back()->with('error', 'Missing required product headers: ' . implode(', ', $missingHeaders));
+            if (! empty($missingHeaders)) {
+                return response()->json([
+                    'error' => 'Missing required product headers: '.implode(', ', $missingHeaders),
+                ], 422);
             }
 
             foreach ($data as $row) {
-                if (count($row) !== count($header)) continue; // skip malformed rows
+                if (count($row) !== count($header)) {
+                    continue;
+                } // skip malformed rows
 
                 // Build associative array with lowercased keys
                 $rowData = array_combine($header, $row);
@@ -150,7 +180,7 @@ class AdminController extends Controller
                 ]);
 
                 // Create ProductVariant if SKU or price is present
-                if (!empty($rowData['variant price'])) {
+                if (! empty($rowData['variant price'])) {
                     $product->variants()->create([
                         // CSV: Variant SKU
                         'sku' => $rowData['variant sku'] ?? '',
@@ -198,7 +228,7 @@ class AdminController extends Controller
                 }
 
                 // Attach image if present
-                if (!empty($rowData['image_url'])) {
+                if (! empty($rowData['image_url'])) {
                     try {
                         $product
                             ->addMediaFromUrl($rowData['image_url'])
@@ -210,16 +240,19 @@ class AdminController extends Controller
 
                 $created++;
             }
-        }
-        elseif ($category == 'klanten') {
+        } elseif ($category == 'klanten') {
             $requiredProduct = ['customer id'];
             $missingHeaders = array_diff($requiredProduct, $header);
 
-            if (!empty($missingHeaders)) {
-                return back()->with('error', 'Missing required klanten headers: ' . implode(', ', $missingHeaders));
+            if (! empty($missingHeaders)) {
+                return response()->json([
+                    'error' => 'Missing required klanten headers: '.implode(', ', $missingHeaders),
+                ], 422);
             }
             foreach ($data as $row) {
-                if (count($row) !== count($header)) continue; // skip malformed rows
+                if (count($row) !== count($header)) {
+                    continue;
+                } // skip malformed rows
 
                 // Build associative array with lowercased keys
                 $rowData = array_combine($header, $row);
@@ -239,45 +272,48 @@ class AdminController extends Controller
                 $created++;
             }
         }
-//        elseif($category =='inventaris'){
-//            $requiredProduct = ['location'];
-//            $missingHeaders = array_diff($requiredProduct, $header);
-//            if (!empty($missingHeaders)) {
-//                return back()->with('error', 'Missing required inventory ' . implode(', ', $missingHeaders));
-//            }
-//            //TODO:: fix inventory import if necissary
-//            foreach ($data as $row) {
-//                if (count($row) !== count($header)) continue;
-//                $rowData = array_combine($header, $row);
-//                $inventory = Inventory::create([
-//                    'handle'           => $rowData['handle'] ?? '',
-//                    'title'            => $rowData['title'] ?? '',
-//                    'option1_name'     => $rowData['option1 name'] ?? '',
-//                    'option1_value'    => $rowData['option1 value'] ?? '',
-//                    'option2_name'     => $rowData['option2 name'] ?? '',
-//                    'option2_value'    => $rowData['option2 value'] ?? '',
-//                    'option3_name'     => $rowData['option3 name'] ?? '',
-//                    'option3_value'    => $rowData['option3 value'] ?? '',
-//                    'sku'              => $rowData['sku'] ?? '',
-//                    'hs_code'          => $rowData['hs code'] ?? '',
-//                    'coo'              => $rowData['coo'] ?? '',
-//                    'inventory'    => $rowData['location'] ?? '',
-//                ]);
-//                $created++;
-//            }
-//        }
+        //        elseif($category =='inventaris'){
+        //            $requiredProduct = ['location'];
+        //            $missingHeaders = array_diff($requiredProduct, $header);
+        //            if (!empty($missingHeaders)) {
+        //                return back()->with('error', 'Missing required inventory ' . implode(', ', $missingHeaders));
+        //            }
+        //            //TODO:: fix inventory import if necissary
+        //            foreach ($data as $row) {
+        //                if (count($row) !== count($header)) continue;
+        //                $rowData = array_combine($header, $row);
+        //                $inventory = Inventory::create([
+        //                    'handle'           => $rowData['handle'] ?? '',
+        //                    'title'            => $rowData['title'] ?? '',
+        //                    'option1_name'     => $rowData['option1 name'] ?? '',
+        //                    'option1_value'    => $rowData['option1 value'] ?? '',
+        //                    'option2_name'     => $rowData['option2 name'] ?? '',
+        //                    'option2_value'    => $rowData['option2 value'] ?? '',
+        //                    'option3_name'     => $rowData['option3 name'] ?? '',
+        //                    'option3_value'    => $rowData['option3 value'] ?? '',
+        //                    'sku'              => $rowData['sku'] ?? '',
+        //                    'hs_code'          => $rowData['hs code'] ?? '',
+        //                    'coo'              => $rowData['coo'] ?? '',
+        //                    'inventory'    => $rowData['location'] ?? '',
+        //                ]);
+        //                $created++;
+        //            }
+        //        }
         if ($created > 0) {
-            return back()->with('success', "Imported {$created} products!");
-        } else {
-            return back()->with('error', 'No products were imported. Please check your CSV format.');
-        }
-    }
-    public
-        function import()
-        {
-            return Inertia::render('admin/import', [
-                'csrfToken' => csrf_token(),
+            return response()->json([
+                'message' => "Imported {$created} products!",
             ]);
+        } else {
+            return response()->json([
+                'error' => 'No products were imported. Please check your CSV format.',
+            ], 422);
         }
-
     }
+
+    public function import(): JsonResponse
+    {
+        return response()->json([
+            'csrfToken' => csrf_token(),
+        ]);
+    }
+}

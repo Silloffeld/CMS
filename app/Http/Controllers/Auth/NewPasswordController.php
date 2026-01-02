@@ -5,24 +5,22 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class NewPasswordController extends Controller
 {
     /**
-     * Show the password reset page.
+     * Get password reset page data.
      */
-    public function create(Request $request): Response
+    public function create(Request $request): JsonResponse
     {
-        return Inertia::render('auth/reset-password', [
+        return response()->json([
             'email' => $request->email,
             'token' => $request->route('token'),
         ]);
@@ -33,7 +31,7 @@ class NewPasswordController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'token' => 'required',
@@ -59,8 +57,11 @@ class NewPasswordController extends Controller
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        if ($status == Password::PasswordReset) {
-            return to_route('login')->with('status', __($status));
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json([
+                'message' => __($status),
+                'redirect' => route('login'),
+            ]);
         }
 
         throw ValidationException::withMessages([

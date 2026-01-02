@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -17,16 +17,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-
     public function boot()
     {
-        Inertia::share([
-            'flash' => function () {
-                return [
-                    'success' => session('success'),
-                    'error' => session('error'),
-                ];
-            }
-        ]);
+        // Flash messages are now handled via JSON responses in controllers
     }
 }

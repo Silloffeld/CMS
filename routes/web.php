@@ -1,13 +1,18 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-route::get('/', function () {
-    return inertia::render('Shop/welcome');
-})->name('home');
+// API-style route for the home page
+route::get('/api', function () {
+    return response()->json([
+        'message' => 'Shop welcome page',
+    ]);
+})->name('api.home');
 
+// Serve the React app for all non-API routes
+Route::get('/{any?}', function () {
+    return view('app');
+})->where('any', '^(?!api).*$')->name('home');
 
 require __DIR__.'/admin.php';
 require __DIR__.'/settings.php';
